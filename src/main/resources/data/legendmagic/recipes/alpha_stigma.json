@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "E E",
+    " S ",
+    "E E"
+  ],
+  "key": {
+    "E": { "item": "minecraft:ender_eye" },
+    "S": { "item": "minecraft:spider_eye" }
+  },
+  "result": {
+    "item": "legendmagic:alpha_stigma"
+  }
+}
