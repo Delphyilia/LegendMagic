@@ -1,6 +1,7 @@
 package com.delphy.legendmagic.network;
 
 import com.delphy.legendmagic.magic.LightningSpell;
+import com.delphy.legendmagic.util.EyeUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -19,6 +20,9 @@ public class CastLightningPacket {
     public static void handle(CastLightningPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
+            if (!EyeUtil.hasCopyEye(player)) {
+                return;
+            }
             if (player != null) {
                 player.getServer().execute(() -> {
                     LightningSpell.cast(player);

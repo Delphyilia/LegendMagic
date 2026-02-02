@@ -21,7 +21,7 @@ public class LegendMagic {
     public LegendMagic() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModNetwork.register(bus);
+        ModNetwork.register();
 
         LegendMagicItems.register(bus);
         ModCreativeTabs.CREATIVE_TABS.register(bus);

@@ -19,9 +19,13 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
+
+        // ⭐ エンティティレンダラー登録
         EntityRenderers.register(
                 ModEntities.ROLANDSOLDIER.get(),
                 RolandSoldierRenderer::new
         );
+
+
     }
 }
