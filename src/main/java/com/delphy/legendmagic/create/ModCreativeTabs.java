@@ -23,6 +23,11 @@ public class ModCreativeTabs {
                             .displayItems((parameters, output) -> {
                                 output.accept(LegendMagicItems.ALPHA_STIGMA.get());
                                 output.accept(LegendMagicItems.ROLAND_SOLDIER_SPAWN_EGG.get());
+                                output.accept(LegendMagicItems.DANGO_DOUGH.get());
+                                output.accept(LegendMagicItems.DANGO.get());
+                                output.accept(LegendMagicItems.DANGO_SEAL.get());
+                                output.accept(LegendMagicItems.LONG_SWORD.get());
+                                output.accept(LegendMagicItems.GOD_DANGO_SWORD.get());
                             })
                             .build()
             );

@@ -10,8 +10,8 @@ public class SelfStrengtheningSpell {
 
     public static void cast(ServerPlayer player) {
 
-        int duration = 20 * 20; // 20秒
-        int amplifier = 5; // レベル2相当
+        int duration = 20 * 120; // 20秒
+        int amplifier = 10; // レベル2相当
 
         // 移動速度UP
         player.addEffect(new MobEffectInstance(
@@ -30,6 +30,13 @@ public class SelfStrengtheningSpell {
         // 防御UP
         player.addEffect(new MobEffectInstance(
                 MobEffects.DAMAGE_RESISTANCE,
+                duration,
+                amplifier
+        ));
+
+        // 水中呼吸
+        player.addEffect(new MobEffectInstance(
+                MobEffects.WATER_BREATHING,
                 duration,
                 amplifier
         ));
