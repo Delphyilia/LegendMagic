@@ -12,6 +12,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+
 public class LegendMagicItems {
 
     public static final DeferredRegister<Item> ITEMS =
@@ -62,6 +63,9 @@ public class LegendMagicItems {
     public static final RegistryObject<Item> GOD_DANGO_SWORD = ITEMS.register("god_dango_sword",
             () -> new SwordItem(Tiers.DIAMOND, 10, -2.0f, new Item.Properties().rarity(Rarity.EPIC)));
 
+    // --- 追加分：魔法書 ---
+    public static final RegistryObject<Item> GRIMOIRE = ITEMS.register("grimoire",
+            () -> new GrimoireItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

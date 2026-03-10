@@ -4,6 +4,7 @@ import com.delphy.legendmagic.client.input.ModKeyBindings; // 追加
 import com.delphy.legendmagic.create.ModCreativeTabs;
 import com.delphy.legendmagic.entity.ModEntities;
 import com.delphy.legendmagic.item.LegendMagicItems;
+import com.delphy.legendmagic.magic.SpellRegistry;
 import com.delphy.legendmagic.network.ModNetwork;
 import net.minecraftforge.api.distmarker.Dist; // 追加
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent; // 追加
@@ -23,7 +24,12 @@ public class LegendMagic {
     public LegendMagic() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        // 魔法レジストリを登録 (アイテム登録などより先に書くのが無難です)
+        SpellRegistry.register(bus);
+
         ModNetwork.register();
+
+
 
         LegendMagicItems.register(bus);
         ModCreativeTabs.CREATIVE_TABS.register(bus);

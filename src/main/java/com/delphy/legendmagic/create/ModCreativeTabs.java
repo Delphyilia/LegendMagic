@@ -28,6 +28,7 @@ public class ModCreativeTabs {
                                 output.accept(LegendMagicItems.DANGO_SEAL.get());
                                 output.accept(LegendMagicItems.LONG_SWORD.get());
                                 output.accept(LegendMagicItems.GOD_DANGO_SWORD.get());
+                                output.accept(LegendMagicItems.GRIMOIRE.get());
                             })
                             .build()
             );
