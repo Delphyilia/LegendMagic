@@ -8,7 +8,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 public class EyeUtil {
 
-    public static boolean hasCopyEye(Player player) {
+    public static boolean hasAlphaStigma(Player player) {
 
         return CuriosApi.getCuriosHelper()
                 .findFirstCurio(player, LegendMagicItems.ALPHA_STIGMA.get())

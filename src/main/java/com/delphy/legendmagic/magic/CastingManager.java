@@ -1,6 +1,7 @@
 package com.delphy.legendmagic.magic;
 
 import com.delphy.legendmagic.api.AbstractMagic;
+import com.delphy.legendmagic.network.CastMagicPacket;
 import com.delphy.legendmagic.network.ModNetwork;
 import net.minecraft.client.Minecraft;
 
@@ -10,14 +11,21 @@ public class CastingManager {
     private static int maxCastTime = 0;
 
     public static void startCasting(AbstractMagic spell) {
-        // すでに同じ魔法を唱えていたらキャンセル（トグル動作）
+        if (spell == null) return;
+
+        // すでに同じ魔法を唱えていたらキャンセル
         if (activeSpell == spell) {
             cancel();
             return;
         }
+
         activeSpell = spell;
         castTick = 0;
         maxCastTime = spell.getCastTime();
+
+        // ⭐ サーバーへ「詠唱開始」を通知（第2引数をtrueに）
+        // これによりサーバー側で announceChant が実行されます
+        ModNetwork.CHANNEL.sendToServer(new CastMagicPacket(spell.getSpellId(), true));
     }
 
     public static void tick() {
@@ -27,8 +35,9 @@ public class CastingManager {
 
         // 詠唱完了！
         if (castTick >= maxCastTime) {
-            ModNetwork.sendCastMagic(activeSpell.getSpellId());
-            activeSpell = null; // 終了
+            // ⭐ サーバーへ「魔法実行」を通知（第2引数をfalseに）
+            ModNetwork.CHANNEL.sendToServer(new CastMagicPacket(activeSpell.getSpellId(), false));
+            activeSpell = null;
         }
     }
 

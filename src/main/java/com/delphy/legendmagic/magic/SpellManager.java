@@ -1,65 +1,114 @@
 package com.delphy.legendmagic.magic;
 
 import com.delphy.legendmagic.api.AbstractMagic;
+import com.delphy.legendmagic.network.ModNetwork;
+import com.delphy.legendmagic.network.SyncLearnedSpellsPacket;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpellManager {
-    // プレイヤーが現在セットしている最大5つの魔法（インターフェースで保持）
-    private static final List<AbstractMagic> EQUIPPED_SPELLS = new ArrayList<>();
-    private static int selectedSlotIndex = 0;
-
-    // 初期化処理
-    public static void init() {
-        // 初期状態で何もセットされていない場合、レジストリから取得してセットするなどの処理が可能
-        // ここでは空リストのままにし、魔導書GUIからセットさせるのが一般的です。
-    }
+    // NBTに保存する際のキー名
+    private static final String TAG_EQUIPPED = "LegendMagic_Equipped";
+    private static final String TAG_LEARNED = "LegendMagic_Learned";
+    private static final String TAG_SELECTED_INDEX = "LegendMagic_SelectedIdx";
 
     /**
-     * 現在選択中の魔法を取得
+     * 現在選択中の魔法を取得（プレイヤーごとのNBTから）
      */
-    public static AbstractMagic getCurrent() {
-        if (EQUIPPED_SPELLS.isEmpty()) return null;
+    public static AbstractMagic getCurrent(Player player) {
+        int index = getSelectedIndex(player);
+        List<AbstractMagic> equipped = getEquippedSpells(player);
 
-        // インデックスが範囲外にならないよう調整
-        if (selectedSlotIndex >= EQUIPPED_SPELLS.size()) {
-            selectedSlotIndex = 0;
+        if (equipped.isEmpty() || index < 0 || index >= equipped.size()) {
+            return null;
         }
-
-        return EQUIPPED_SPELLS.get(selectedSlotIndex);
+        return equipped.get(index);
     }
 
     /**
-     * 次の魔法へ切り替え
+     * 選択スロットを次に進める
      */
-    public static void next() {
-        if (EQUIPPED_SPELLS.isEmpty()) return;
-        selectedSlotIndex = (selectedSlotIndex + 1) % EQUIPPED_SPELLS.size();
+    public static void next(Player player) {
+        List<AbstractMagic> equipped = getEquippedSpells(player);
+        if (equipped.isEmpty()) return;
+
+        int nextIndex = (getSelectedIndex(player) + 1) % equipped.size();
+        player.getPersistentData().putInt(TAG_SELECTED_INDEX, nextIndex);
     }
 
     /**
-     * 魔法をセットするメソッド（GUIから呼び出し）
-     * @param slot 0~4のスロット番号
-     * @param spell セットする魔法のインスタンス
+     * 魔法を習得する（複写眼で見た時に呼び出す）
      */
-    public static void setSpellAt(int slot, AbstractMagic spell) {
+    public static void learnSpell(ServerPlayer player, AbstractMagic spell) {
+        CompoundTag data = player.getPersistentData();
+        ListTag learnedList = data.getList(TAG_LEARNED, Tag.TAG_STRING);
+        String spellId = spell.getSpellId().toString();
+
+        if (!hasLearned(player, spell)) {
+            learnedList.add(StringTag.valueOf(spellId));
+            data.put(TAG_LEARNED, learnedList);
+
+            // クライアントへ同期。新しいパケットクラスを作成済みである前提です。
+            CompoundTag syncData = new CompoundTag();
+            syncData.put(TAG_LEARNED, learnedList);
+            ModNetwork.sendToClient(new SyncLearnedSpellsPacket(syncData), player);
+        }
+    }
+
+    /**
+     * 習得済みかチェック
+     */
+    public static boolean hasLearned(Player player, AbstractMagic spell) {
+        ListTag learnedList = player.getPersistentData().getList(TAG_LEARNED, Tag.TAG_STRING);
+        String targetId = spell.getSpellId().toString();
+
+        for (int i = 0; i < learnedList.size(); i++) {
+            if (learnedList.getString(i).equals(targetId)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * スロットに魔法をセットする
+     */
+    public static void setSpellAt(Player player, int slot, AbstractMagic spell) {
         if (slot < 0 || slot >= 5) return;
 
-        // リストのサイズをスロット数に合わせる調整
-        while (EQUIPPED_SPELLS.size() <= slot) {
-            EQUIPPED_SPELLS.add(null);
+        CompoundTag data = player.getPersistentData();
+        ListTag equippedList = data.getList(TAG_EQUIPPED, Tag.TAG_STRING);
+
+        // リストのサイズをスロット数(5)に合わせて初期化
+        while (equippedList.size() < 5) {
+            equippedList.add(StringTag.valueOf("none"));
         }
 
-        EQUIPPED_SPELLS.set(slot, spell);
+        equippedList.set(slot, StringTag.valueOf(spell.getSpellId().toString()));
+        data.put(TAG_EQUIPPED, equippedList);
     }
 
-    /**
-     * 指定したスロットの魔法を取得
-     */
-    public static AbstractMagic getEquippedSpellAt(int slot) {
-        if (slot >= 0 && slot < EQUIPPED_SPELLS.size()) {
-            return EQUIPPED_SPELLS.get(slot);
+    // --- 補助メソッド ---
+
+    public static List<AbstractMagic> getEquippedSpells(Player player) {
+        List<AbstractMagic> spells = new ArrayList<>();
+        ListTag list = player.getPersistentData().getList(TAG_EQUIPPED, Tag.TAG_STRING);
+
+        for (int i = 0; i < list.size(); i++) {
+            ResourceLocation id = new ResourceLocation(list.getString(i));
+            AbstractMagic magic = SpellRegistry.REGISTRY.get().getValue(id);
+            if (magic != null) spells.add(magic);
         }
-        return null;
+        return spells;
+    }
+
+    public static int getSelectedIndex(Player player) {
+        return player.getPersistentData().getInt(TAG_SELECTED_INDEX);
     }
 }

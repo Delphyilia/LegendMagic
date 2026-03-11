@@ -35,42 +35,32 @@ public class Izuchi implements AbstractMagic {
     public String getDescription() { return "視線の先の敵に直接ダメージを与え、青い火花を散らす。"; }
 
     @Override
-    public void execute(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
-
-        // 1. レイキャストの設定
+    public void execute(LivingEntity caster) { // 引数を変更
+        ServerLevel level = (ServerLevel) caster.level();
         double range = 30.0;
-        Vec3 start = player.getEyePosition();
-        Vec3 look = player.getLookAngle();
+
+        Vec3 start = caster.getEyePosition();
+        Vec3 look = caster.getLookAngle();
         Vec3 end = start.add(look.x * range, look.y * range, look.z * range);
 
-        // 判定用のバウンディングボックス（プレイヤーの周囲を射程分広げる）
-        AABB searchArea = player.getBoundingBox().expandTowards(look.scale(range)).inflate(1.0D);
-
-        // ⭐ 修正ポイント：ProjectileUtil.getEntityHitResult を使用し、判定を安定させる
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
-                player,
-                start,
-                end,
-                searchArea,
-                (entity) -> !entity.isSpectator() && entity.isPickable(),
-                range * range // ここは距離の2乗を渡す仕様の場合があります
+                caster, start, end,
+                caster.getBoundingBox().expandTowards(look.scale(range)).inflate(1.0D),
+                (e) -> !e.isSpectator() && e.isPickable(),
+                range * range
         );
 
-        // 終点の決定
         Vec3 actualEnd = (entityHit != null) ? entityHit.getLocation() : end;
 
-        // 2. ダメージ処理
         if (entityHit != null && entityHit.getEntity() instanceof LivingEntity livingTarget) {
-            livingTarget.hurt(player.damageSources().magic(), 10.0F);
+            // LivingEntityでも使えるダメージソースの取得方法
+            livingTarget.hurt(caster.damageSources().magic(), 10.0F);
 
-            // 着弾エフェクト
             level.sendParticles(ParticleTypes.ELECTRIC_SPARK,
                     livingTarget.getX(), livingTarget.getY() + 1, livingTarget.getZ(),
                     20, 0.2, 0.5, 0.2, 0.1);
         }
 
-        // 3. 見た目の描画
         spawnElectricTrail(level, start, actualEnd);
     }
 

@@ -7,6 +7,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -34,18 +36,28 @@ public class SukuinoIkazuchiwo implements AbstractMagic {
     public int getCastTime() { return 60; }
 
     @Override
-    public void execute(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
-        double range = 25.0; // 射程を少し長めに設定
+    public void execute(LivingEntity caster) {
+        ServerLevel level = (ServerLevel) caster.level();
+        double range = 25.0;
 
-        Vec3 start = player.getEyePosition();
-        Vec3 look = player.getLookAngle();
+        Vec3 start = caster.getEyePosition();
+        Vec3 look;
+
+        // ターゲットがいればその中心を狙う、いなければ正面を向く
+        if (caster instanceof Mob mob && mob.getTarget() != null) {
+            LivingEntity target = mob.getTarget();
+            // ターゲットの足元ではなく、胴体(中心)を狙うようにオフセットを加える
+            look = target.position().add(0, target.getBbHeight() * 0.5, 0).subtract(start).normalize();
+        } else {
+            look = caster.getLookAngle();
+        }
+
         Vec3 end = start.add(look.x * range, look.y * range, look.z * range);
 
         // --- 1. エンティティ（敵）を優先的に探すレイキャスト ---
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
-                player, start, end,
-                player.getBoundingBox().expandTowards(look.scale(range)).inflate(2.0D),
+                caster, start, end,
+                caster.getBoundingBox().expandTowards(look.scale(range)).inflate(2.0D),
                 (e) -> !e.isSpectator() && e.isPickable(),
                 range * range
         );
@@ -57,7 +69,7 @@ public class SukuinoIkazuchiwo implements AbstractMagic {
             targetPos = entityHit.getEntity().position();
         } else {
             // 敵がいない場合は、視線の先のブロックを探す
-            HitResult blockHit = player.pick(range, 0.0F, false);
+            HitResult blockHit = caster.pick(range, 0.0F, false);
             targetPos = blockHit.getLocation();
         }
 
@@ -65,7 +77,12 @@ public class SukuinoIkazuchiwo implements AbstractMagic {
         LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
         if (bolt != null) {
             bolt.moveTo(targetPos);
-            bolt.setCause(player);
+
+            // ⭐ 修正ポイント：ServerPlayerの場合のみsetCauseを呼ぶ
+            if (caster instanceof ServerPlayer serverPlayer) {
+                bolt.setCause(serverPlayer);
+            }
+
             level.addFreshEntity(bolt);
         }
     }

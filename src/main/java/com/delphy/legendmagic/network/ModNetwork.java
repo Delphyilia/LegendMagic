@@ -3,6 +3,7 @@ package com.delphy.legendmagic.network;
 import com.delphy.legendmagic.LegendMagic;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class ModNetwork {
@@ -12,13 +13,13 @@ public class ModNetwork {
 
     public static void register() {
         CHANNEL = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation(LegendMagic.MODID, "network"),
+                new ResourceLocation(LegendMagic.MODID, "main"), // IDを一貫させる
                 () -> PROTOCOL_VERSION,
                 PROTOCOL_VERSION::equals,
                 PROTOCOL_VERSION::equals
         );
 
-        // CastMagicPacket側の修正（ID送信）に対応
+        // 1. 魔法発動パケット (Client -> Server)
         CHANNEL.registerMessage(
                 packetId++,
                 CastMagicPacket.class,
@@ -26,13 +27,32 @@ public class ModNetwork {
                 CastMagicPacket::decode,
                 CastMagicPacket::handle
         );
+
+        // 2. 習得魔法同期パケット (Server -> Client) ⭐追加
+        CHANNEL.registerMessage(
+                packetId++,
+                SyncLearnedSpellsPacket.class,
+                SyncLearnedSpellsPacket::encode,
+                SyncLearnedSpellsPacket::decode,
+                SyncLearnedSpellsPacket::handle
+        );
     }
 
     /**
      * 魔法発動パケットをサーバーへ送信
-     * @param spellId 魔法の固有ID (例: legendmagic:izuchi)
      */
-    public static void sendCastMagic(ResourceLocation spellId) {
-        CHANNEL.sendToServer(new CastMagicPacket(spellId));
+    public static void sendCastMagic(ResourceLocation spellId, boolean isStart) {
+        if (CHANNEL != null) {
+            CHANNEL.sendToServer(new CastMagicPacket(spellId, isStart));
+        }
+    }
+
+    /**
+     * 習得情報をクライアントへ送信 ⭐追加
+     */
+    public static void sendToClient(Object packet, net.minecraft.server.level.ServerPlayer player) {
+        if (CHANNEL != null) {
+            CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+        }
     }
 }

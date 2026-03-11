@@ -6,7 +6,6 @@ import com.delphy.legendmagic.magic.SpellManager;
 import com.delphy.legendmagic.api.AbstractMagic;
 import com.delphy.legendmagic.util.EyeUtil;
 import com.delphy.legendmagic.client.input.ModKeyBindings;
-import com.delphy.legendmagic.network.ModNetwork;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -28,9 +27,9 @@ public class KeyInputHandler {
         // ===== 魔法発動キー =====
         // KeyInputHandler.java 内の魔法発動キー処理
         if (ModKeyBindings.CAST_MAGIC_KEY.consumeClick()) {
-            if (!EyeUtil.hasCopyEye(mc.player)) return;
+            if (!EyeUtil.hasAlphaStigma(mc.player)) return;
 
-            AbstractMagic currentSpell = SpellManager.getCurrent();
+            AbstractMagic currentSpell = SpellManager.getCurrent(mc.player);
             if (currentSpell != null) {
                 // 即発動ではなく、詠唱を開始する
                 CastingManager.startCasting(currentSpell);
@@ -42,9 +41,9 @@ public class KeyInputHandler {
 
         // ===== 魔法切替キー =====
         if (ModKeyBindings.MAGIC_SWITCH_KEY.consumeClick()) {
-            SpellManager.next();
+            SpellManager.next(mc.player);
 
-            AbstractMagic nextSpell = SpellManager.getCurrent();
+            AbstractMagic nextSpell = SpellManager.getCurrent(mc.player);
             if (nextSpell != null) {
                 mc.player.displayClientMessage(
                         Component.literal("選択中: " + nextSpell.getName()),
