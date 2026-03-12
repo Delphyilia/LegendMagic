@@ -3,6 +3,7 @@ package com.delphy.legendmagic.entity;
 import com.delphy.legendmagic.api.AbstractMagic;
 import com.delphy.legendmagic.api.event.MagicCastEvent;
 import com.delphy.legendmagic.entity.ai.MagicAttackGoal;
+import com.delphy.legendmagic.magic.estabul.SpiritBeast;
 import com.delphy.legendmagic.magic.roland.Izuchi;
 import com.delphy.legendmagic.magic.runa.SukuinoIkazuchiwo;
 import net.minecraft.ChatFormatting;
@@ -57,14 +58,15 @@ public class RolandSoldierEntity extends Monster {
      */
     public void performMagicAttack(AbstractMagic spell) {
         if (!this.level().isClientSide) {
+            /*
             // 敵が詠唱文を「叫ぶ」演出
-            Component chantText = Component.literal(this.getName().getString() + "「" + spell.getChant() + "」")
-                    .withStyle(ChatFormatting.RED); // 敵は赤色などで差別化
+            Component chantText = Component.literal(this.getName().getString() + "「" + spell.getChant() + "」").withStyle(ChatFormatting.RED); // 敵は赤色などで差別化
 
             // 周囲のプレイヤー全員に聞こえるようにする
             for (ServerPlayer player : this.level().getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(20))) {
                 player.sendSystemMessage(chantText);
             }
+            */
 
             // 魔法の実行
             spell.execute(this);

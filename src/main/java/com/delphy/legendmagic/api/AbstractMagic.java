@@ -8,11 +8,24 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 public interface AbstractMagic {
-    ResourceLocation getSpellId(); // 魔法を識別する固有ID
+
+    // 魔法を識別する固有ID
+    ResourceLocation getSpellId();
+
+    // 魔法の名前
     String getName();
+
+    // 魔法の詠唱文
     String getChant();
+
+    // 魔法の説明文
     String getDescription();
-    default int getCastTime() { return 40; } // デフォルトで2秒 (20tick = 1s)
+
+    // 魔法の詠唱時間
+    // デフォルトで2秒 (20tick = 1s)
+    default int getCastTime() { return 40; }
+
+    // 魔法の実行(本体)
     void execute(LivingEntity player);
 
 
@@ -23,13 +36,15 @@ public interface AbstractMagic {
     default void announceChant(LivingEntity caster) {
         if (caster.level().isClientSide) return;
 
-        // 詠唱文を構築 (例: 「我・契約文を…」)
-        Component text = Component.literal("「" + this.getChant() + "」")
-                .withStyle(caster instanceof Player ? ChatFormatting.GOLD : ChatFormatting.RED)
-                .withStyle(ChatFormatting.ITALIC);
+        // 名前を付けて、誰が何を唱えているか分かりやすくする
+        String name = caster.getName().getString();
+        Component text = Component.literal(name + "「" + this.getChant() + "」")
+                         .withStyle(ChatFormatting.GOLD, ChatFormatting.ITALIC);
 
-        // 周囲16ブロック以内のプレイヤーにのみメッセージを表示（ログの氾濫を防ぐため）
         caster.level().getEntitiesOfClass(ServerPlayer.class, caster.getBoundingBox().inflate(16))
-                .forEach(player -> player.sendSystemMessage(text));
+                .forEach(player -> {
+                    // 第2引数を true にしてアクションバーに表示
+                    player.displayClientMessage(text, true);
+                });
     }
 }

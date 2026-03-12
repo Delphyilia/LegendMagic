@@ -16,9 +16,14 @@ import java.util.List;
 
 public class SpellManager {
     // NBTに保存する際のキー名
-    private static final String TAG_EQUIPPED = "LegendMagic_Equipped";
-    private static final String TAG_LEARNED = "LegendMagic_Learned";
-    private static final String TAG_SELECTED_INDEX = "LegendMagic_SelectedIdx";
+    // 装備済みの魔法
+    public static final String TAG_EQUIPPED = "LegendMagic_Equipped";
+
+    // 学習済みの魔法
+    public static final String TAG_LEARNED = "LegendMagic_Learned";
+
+    // 現在選んでいるスロット
+    public static final String TAG_SELECTED_INDEX = "LegendMagic_SelectedIdx";
 
     /**
      * 現在選択中の魔法を取得（プレイヤーごとのNBTから）
