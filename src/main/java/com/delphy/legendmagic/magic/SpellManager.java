@@ -90,23 +90,31 @@ public class SpellManager {
         CompoundTag data = player.getPersistentData();
         ListTag equippedList = data.getList(TAG_EQUIPPED, Tag.TAG_STRING);
 
-        // リストのサイズをスロット数(5)に合わせて初期化
         while (equippedList.size() < 5) {
             equippedList.add(StringTag.valueOf("none"));
         }
 
         equippedList.set(slot, StringTag.valueOf(spell.getSpellId().toString()));
         data.put(TAG_EQUIPPED, equippedList);
-    }
 
-    // --- 補助メソッド ---
+        // ⭐修正: サーバー側で実行されている場合、クライアントへ同期を送る
+        if (player instanceof ServerPlayer serverPlayer) {
+            CompoundTag syncData = new CompoundTag();
+            syncData.put(TAG_EQUIPPED, equippedList);
+            ModNetwork.sendToClient(new SyncLearnedSpellsPacket(syncData), serverPlayer);
+        }
+    }
 
     public static List<AbstractMagic> getEquippedSpells(Player player) {
         List<AbstractMagic> spells = new ArrayList<>();
         ListTag list = player.getPersistentData().getList(TAG_EQUIPPED, Tag.TAG_STRING);
 
         for (int i = 0; i < list.size(); i++) {
-            ResourceLocation id = new ResourceLocation(list.getString(i));
+            String idStr = list.getString(i);
+            // ⭐修正: "none" の場合は飛ばす
+            if (idStr.equals("none")) continue;
+
+            ResourceLocation id = new ResourceLocation(idStr);
             AbstractMagic magic = SpellRegistry.REGISTRY.get().getValue(id);
             if (magic != null) spells.add(magic);
         }

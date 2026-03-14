@@ -24,7 +24,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class RolandSoldierEntity extends Monster {
 
     // この兵士が使う魔法（例としてライトニング1）
-    private static final AbstractMagic SPELL = new SukuinoIkazuchiwo();
+    private static final AbstractMagic SPELL = new Izuchi();
 
     public RolandSoldierEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);

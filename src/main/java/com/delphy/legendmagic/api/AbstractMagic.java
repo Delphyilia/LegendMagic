@@ -25,6 +25,8 @@ public interface AbstractMagic {
     // デフォルトで2秒 (20tick = 1s)
     default int getCastTime() { return 40; }
 
+    
+
     // 魔法の実行(本体)
     void execute(LivingEntity player);
 

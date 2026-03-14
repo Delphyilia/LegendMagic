@@ -4,6 +4,9 @@ import com.delphy.legendmagic.api.AbstractMagic;
 import com.delphy.legendmagic.network.CastMagicPacket;
 import com.delphy.legendmagic.network.ModNetwork;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 
 public class CastingManager {
     private static AbstractMagic activeSpell = null;
@@ -32,6 +35,22 @@ public class CastingManager {
         if (activeSpell == null) return;
 
         castTick++;
+
+        // --- 自分の周りに雷を漂わせる演出 (20%の確率で発生) ---
+        // いずち限定
+        if (Minecraft.getInstance().level.random.nextFloat() < 0.2f) {
+            LocalPlayer player = Minecraft.getInstance().player;
+            double x = player.getX() + (player.getRandom().nextDouble() - 0.5) * 6;
+            double z = player.getZ() + (player.getRandom().nextDouble() - 0.5) * 6;
+
+            LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level());
+            if (bolt != null) {
+                bolt.moveTo(x, player.getY(), z);
+                bolt.setVisualOnly(true); // 地形破壊やダメージなし
+                player.level().addFreshEntity(bolt);
+            }
+        }
+
 
         // 詠唱完了！
         if (castTick >= maxCastTime) {

@@ -2,6 +2,7 @@ package com.delphy.legendmagic.network;
 
 import com.delphy.legendmagic.LegendMagic;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -13,7 +14,7 @@ public class ModNetwork {
 
     public static void register() {
         CHANNEL = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation(LegendMagic.MODID, "main"), // IDを一貫させる
+                new ResourceLocation(LegendMagic.MODID, "main"),
                 () -> PROTOCOL_VERSION,
                 PROTOCOL_VERSION::equals,
                 PROTOCOL_VERSION::equals
@@ -28,7 +29,7 @@ public class ModNetwork {
                 CastMagicPacket::handle
         );
 
-        // 2. 習得魔法同期パケット (Server -> Client) ⭐追加
+        // 2. 習得魔法同期パケット (Server -> Client)
         CHANNEL.registerMessage(
                 packetId++,
                 SyncLearnedSpellsPacket.class,
@@ -36,23 +37,33 @@ public class ModNetwork {
                 SyncLearnedSpellsPacket::decode,
                 SyncLearnedSpellsPacket::handle
         );
+
+        // 3. 魔導書にセットするパケット (Client -> Server)
+        CHANNEL.registerMessage(
+                packetId++,
+                C2SSetSpellPacket.class,
+                C2SSetSpellPacket::encode,
+                C2SSetSpellPacket::decode,
+                C2SSetSpellPacket::handle
+        );
     }
 
     /**
-     * 魔法発動パケットをサーバーへ送信
+     * サーバーへパケットを送信する汎用メソッド
      */
-    public static void sendCastMagic(ResourceLocation spellId, boolean isStart) {
+    public static void sendToServer(Object packet) {
         if (CHANNEL != null) {
-            CHANNEL.sendToServer(new CastMagicPacket(spellId, isStart));
+            CHANNEL.sendToServer(packet);
         }
     }
 
     /**
-     * 習得情報をクライアントへ送信 ⭐追加
+     * 特定のプレイヤー（クライアント）へパケットを送信する汎用メソッド
      */
-    public static void sendToClient(Object packet, net.minecraft.server.level.ServerPlayer player) {
+    public static void sendToClient(Object packet, ServerPlayer player) {
         if (CHANNEL != null) {
             CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
         }
     }
+
 }

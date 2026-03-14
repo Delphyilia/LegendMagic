@@ -38,7 +38,7 @@ public class SpiritBeast implements AbstractMagic {
         int duration = 20 * 120; // 120秒
 
         // casterに対してエフェクトを付与
-        caster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, duration, 2));
+        caster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, duration, 1));
         caster.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, duration, 2));
         caster.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, duration, 2));
 

@@ -3,6 +3,8 @@ package com.delphy.legendmagic.client.gui;
 import com.delphy.legendmagic.api.AbstractMagic;
 import com.delphy.legendmagic.magic.SpellManager;
 import com.delphy.legendmagic.magic.SpellRegistry;
+import com.delphy.legendmagic.network.C2SSetSpellPacket;
+import com.delphy.legendmagic.network.ModNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -39,9 +41,14 @@ public class MagicBookScreen extends Screen {
 
         for (int i = 0; i < learnedMagics.size(); i++) {
             AbstractMagic spell = learnedMagics.get(i);
+            // MagicBookScreen.java 内のセットボタン部分を修正
             this.addRenderableWidget(Button.builder(Component.literal("セット"), (btn) -> {
-                // プレイヤー引数を追加して呼び出し
-                SpellManager.setSpellAt(player, this.selectedSlot, spell);
+                // 直接 SpellManager を呼ぶのをやめ、サーバーにパケットを送る
+                ModNetwork.sendToServer(new C2SSetSpellPacket(this.selectedSlot, spell.getSpellId()));
+
+                // クライアント側でも即座に反映して見せたい場合は、
+                // 引き続き SpellManager.setSpellAt を呼んでも良いですが、
+                // サーバーからの返信パケット（SyncLearnedSpellsPacket）で同期されるのが理想です。
             }).bounds(x + 80, 50 + (i * 30), 40, 20).build());
         }
     }
