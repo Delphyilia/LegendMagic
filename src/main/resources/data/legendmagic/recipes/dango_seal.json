@@ -1,8 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    { "item": "legendmagic:dango" },
-    { "item": "minecraft:paper" }
+    {
+      "item": "legendmagic:dango"
+    },
+    {
+      "item": "minecraft:paper"
+    }
   ],
   "result": {
     "item": "legendmagic:dango_seal"

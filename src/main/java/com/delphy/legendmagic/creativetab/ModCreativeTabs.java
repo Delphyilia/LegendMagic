@@ -29,6 +29,7 @@ public class ModCreativeTabs {
                                 output.accept(LegendMagicItems.LONG_SWORD.get());
                                 output.accept(LegendMagicItems.GOD_DANGO_SWORD.get());
                                 output.accept(LegendMagicItems.GRIMOIRE.get());
+                                output.accept(LegendMagicItems.RING_OF_THE_DARK_EMPEROR.get());
                             })
                             .build()
             );

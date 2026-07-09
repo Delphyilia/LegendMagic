@@ -1,8 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    { "item": "legendmagic:long_sword" },
-    { "item": "legendmagic:dango_seal" }
+    {
+      "item": "legendmagic:long_sword"
+    },
+    {
+      "item": "legendmagic:dango_seal"
+    }
   ],
   "result": {
     "item": "legendmagic:god_dango_sword"

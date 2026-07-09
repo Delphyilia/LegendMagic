@@ -3,6 +3,7 @@ package com.delphy.legendmagic.client;
 import com.delphy.legendmagic.LegendMagic;
 import com.delphy.legendmagic.entity.ModEntities;
 import com.delphy.legendmagic.client.renderer.RolandSoldierRenderer;
+import com.delphy.legendmagic.client.renderer.DarkWolfRenderer;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,6 +25,10 @@ public class ClientSetup {
         EntityRenderers.register(
                 ModEntities.ROLAND_SOLDIER.get(),
                 RolandSoldierRenderer::new
+        );
+        EntityRenderers.register(
+                ModEntities.DARK_WOLF.get(),
+                DarkWolfRenderer::new
         );
 
 

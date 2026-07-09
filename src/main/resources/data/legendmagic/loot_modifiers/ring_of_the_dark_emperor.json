@@ -1,0 +1,10 @@
+{
+  "type": "legendmagic:add_item",
+  "conditions": [
+    {
+      "condition": "minecraft:random_chance",
+      "chance": 0.05
+    }
+  ],
+  "item": "legendmagic:ring_of_the_dark_emperor"
+}

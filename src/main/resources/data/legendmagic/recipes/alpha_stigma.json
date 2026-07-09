@@ -6,8 +6,12 @@
     "E E"
   ],
   "key": {
-    "E": { "item": "minecraft:ender_eye" },
-    "S": { "item": "minecraft:spider_eye" }
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "S": {
+      "item": "minecraft:spider_eye"
+    }
   },
   "result": {
     "item": "legendmagic:alpha_stigma"

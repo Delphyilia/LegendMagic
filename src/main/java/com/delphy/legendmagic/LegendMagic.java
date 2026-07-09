@@ -4,6 +4,7 @@ import com.delphy.legendmagic.client.input.ModKeyBindings;
 import com.delphy.legendmagic.creativetab.ModCreativeTabs;
 import com.delphy.legendmagic.entity.ModEntities;
 import com.delphy.legendmagic.item.LegendMagicItems;
+import com.delphy.legendmagic.loot.ModLootModifiers;
 import com.delphy.legendmagic.magic.SpellRegistry;
 import com.delphy.legendmagic.network.ModNetwork;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,6 +33,7 @@ public class LegendMagic {
         LegendMagicItems.register(bus);
         ModCreativeTabs.CREATIVE_TABS.register(bus);
         ModEntities.ENTITIES.register(bus);
+        ModLootModifiers.LOOT_MODIFIER_SERIALIZERS.register(bus);
 
         // クライアント側のみキー入力を登録
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
