@@ -1,28 +1,33 @@
 package com.delphy.legendmagic.magic;
 
-import com.delphy.legendmagic.api.AbstractMagic;
+import com.delphy.legendmagic.api.Spell;
 import com.delphy.legendmagic.api.event.MagicCastEvent;
 import com.delphy.legendmagic.network.ModNetwork;
-import com.delphy.legendmagic.network.SyncLearnedSpellsPacket;
 import com.delphy.legendmagic.util.EyeUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraft.network.chat.Component;
 
-import java.util.Objects;
-
+/**
+ * 魔法データの同期およびプレイヤーライフサイクルイベントのハンドラー。
+ * - 魔法キャスト時の学習処理（複写眼による解析）
+ * - ログイン / リスポーン / ディメンション移動時のデータ同期
+ */
 @Mod.EventBusSubscriber
-public class LearningHandler {
+public class SpellDataSyncHandler {
 
+    /**
+     * 敵が魔法を使った時、複写眼を持つプレイヤーが視認していれば学習する
+     */
     @SubscribeEvent
     public static void onMagicCast(MagicCastEvent event) {
         if (event.getCaster() instanceof ServerPlayer) return; // プレイヤー自身の魔法は無視
 
-        // ワールド内の全プレイヤーをチェック（または近くのプレイヤーのみ）
+        // ワールド内の近くのプレイヤーをチェック
         for (ServerPlayer player : event.getCaster().level().getEntitiesOfClass(ServerPlayer.class, event.getCaster().getBoundingBox().inflate(32))) {
 
             // 1. アルファスティグマ（複写眼）を装備しているか
@@ -30,12 +35,12 @@ public class LearningHandler {
 
             // 2. 敵が視界に入っているか（内積計算）
             if (isLookingAt(player, event.getCaster())) {
-                AbstractMagic magic = event.getMagic();
+                Spell spell = event.getMagic();
 
                 // 3. すでに習得済みかチェックし、未習得なら魔導書に追加
-                if (!SpellManager.hasLearned(player, magic)) {
-                    SpellManager.learnSpell(player, magic);
-                    player.sendSystemMessage(Component.literal("§c[複写眼] §f魔法を解析しました: " + magic.getName()));
+                if (!SpellManager.hasLearned(player, spell)) {
+                    SpellManager.learnSpell(player, spell);
+                    player.sendSystemMessage(Component.literal("§c[複写眼] §f魔法を解析しました: " + spell.getName()));
                 }
             }
         }
@@ -54,37 +59,36 @@ public class LearningHandler {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            syncLearnedData(player);
+            syncSpellDataToClient(player);
         }
     }
 
     @SubscribeEvent
     public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            syncLearnedData(player);
+            syncSpellDataToClient(player);
         }
     }
 
     /**
-     * サーバーのNBTデータをクライアントに同期する共通メソッド
+     * サーバーのNBTデータをクライアントに同期する
      */
-    private static void syncLearnedData(ServerPlayer player) {
+    private static void syncSpellDataToClient(ServerPlayer player) {
         CompoundTag playerNbt = player.getPersistentData();
         CompoundTag syncData = new CompoundTag();
 
-        // 1. 習得済みリストのコピー
+        // 習得済みリストのコピー
         if (playerNbt.contains(SpellManager.TAG_LEARNED)) {
             syncData.put(SpellManager.TAG_LEARNED, playerNbt.get(SpellManager.TAG_LEARNED));
         }
 
-        // 2. 装備スロットのコピー
+        // 装備スロットのコピー
         if (playerNbt.contains(SpellManager.TAG_EQUIPPED)) {
             syncData.put(SpellManager.TAG_EQUIPPED, playerNbt.get(SpellManager.TAG_EQUIPPED));
         }
 
-        // クライアントへ送信（SyncLearnedSpellsPacketはCompoundTagを丸ごとマージする設計なのでこれでOK）
         if (!syncData.isEmpty()) {
-            ModNetwork.sendToClient(new SyncLearnedSpellsPacket(syncData), player);
+            ModNetwork.sendToClient(new ModNetwork.SyncSpellDataPacket(syncData), player);
         }
     }
 
@@ -94,7 +98,6 @@ public class LearningHandler {
         CompoundTag oldData = event.getOriginal().getPersistentData();
         CompoundTag newData = event.getEntity().getPersistentData();
 
-        // 全てのデータを新しいプレイヤーインスタンスにコピー
         String[] tagsToCopy = {
                 SpellManager.TAG_LEARNED,
                 SpellManager.TAG_EQUIPPED,
@@ -107,9 +110,9 @@ public class LearningHandler {
             }
         }
 
-        // リスポーン直後はクライアント側が空になるので、ここでも同期を送る
+        // リスポーン直後はクライアント側が空になるので同期を送る
         if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
-            syncLearnedData(newServerPlayer);
+            syncSpellDataToClient(newServerPlayer);
         }
     }
 }

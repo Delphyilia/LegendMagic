@@ -1,7 +1,7 @@
 package com.delphy.legendmagic.magic.estabul;
 
 import com.delphy.legendmagic.LegendMagic;
-import com.delphy.legendmagic.api.AbstractMagic;
+import com.delphy.legendmagic.api.Spell;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -9,7 +9,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
-public class SpiritBeast implements AbstractMagic {
+public class SpiritBeast implements Spell {
 
     private static final ResourceLocation SPELL_ID = new ResourceLocation(LegendMagic.MODID, "spirit_beast");
 

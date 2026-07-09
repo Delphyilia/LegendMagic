@@ -22,7 +22,7 @@ public class ClientSetup {
 
         // ⭐ エンティティレンダラー登録
         EntityRenderers.register(
-                ModEntities.ROLANDSOLDIER.get(),
+                ModEntities.ROLAND_SOLDIER.get(),
                 RolandSoldierRenderer::new
         );
 

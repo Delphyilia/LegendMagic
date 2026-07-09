@@ -27,7 +27,7 @@ public class LegendMagicItems {
     public static final RegistryObject<Item> ROLAND_SOLDIER_SPAWN_EGG =
             ITEMS.register("roland_soldier_spawn_egg",
                     () -> new ForgeSpawnEggItem(
-                            ModEntities.ROLANDSOLDIER,
+                            ModEntities.ROLAND_SOLDIER,
                             0x3A3A3A,
                             0xAAAAAA,
                             new Item.Properties()

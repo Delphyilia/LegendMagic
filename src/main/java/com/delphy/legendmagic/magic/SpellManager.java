@@ -1,8 +1,7 @@
 package com.delphy.legendmagic.magic;
 
-import com.delphy.legendmagic.api.AbstractMagic;
+import com.delphy.legendmagic.api.Spell;
 import com.delphy.legendmagic.network.ModNetwork;
-import com.delphy.legendmagic.network.SyncLearnedSpellsPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -14,23 +13,25 @@ import net.minecraft.world.entity.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * プレイヤーの魔法データ（習得・装備・選択）を管理するユーティリティクラス。
+ * データはプレイヤーのPersistentData (NBT) に保存される。
+ */
 public class SpellManager {
     // NBTに保存する際のキー名
-    // 装備済みの魔法
     public static final String TAG_EQUIPPED = "LegendMagic_Equipped";
-
-    // 学習済みの魔法
     public static final String TAG_LEARNED = "LegendMagic_Learned";
-
-    // 現在選んでいるスロット
     public static final String TAG_SELECTED_INDEX = "LegendMagic_SelectedIdx";
+
+    /** 装備可能な魔法スロットの最大数 */
+    public static final int MAX_SPELL_SLOTS = 5;
 
     /**
      * 現在選択中の魔法を取得（プレイヤーごとのNBTから）
      */
-    public static AbstractMagic getCurrent(Player player) {
+    public static Spell getSelectedSpell(Player player) {
         int index = getSelectedIndex(player);
-        List<AbstractMagic> equipped = getEquippedSpells(player);
+        List<Spell> equipped = getEquippedSpells(player);
 
         if (equipped.isEmpty() || index < 0 || index >= equipped.size()) {
             return null;
@@ -41,8 +42,8 @@ public class SpellManager {
     /**
      * 選択スロットを次に進める
      */
-    public static void next(Player player) {
-        List<AbstractMagic> equipped = getEquippedSpells(player);
+    public static void cycleSelectedSpell(Player player) {
+        List<Spell> equipped = getEquippedSpells(player);
         if (equipped.isEmpty()) return;
 
         int nextIndex = (getSelectedIndex(player) + 1) % equipped.size();
@@ -52,7 +53,7 @@ public class SpellManager {
     /**
      * 魔法を習得する（複写眼で見た時に呼び出す）
      */
-    public static void learnSpell(ServerPlayer player, AbstractMagic spell) {
+    public static void learnSpell(ServerPlayer player, Spell spell) {
         CompoundTag data = player.getPersistentData();
         ListTag learnedList = data.getList(TAG_LEARNED, Tag.TAG_STRING);
         String spellId = spell.getSpellId().toString();
@@ -61,17 +62,17 @@ public class SpellManager {
             learnedList.add(StringTag.valueOf(spellId));
             data.put(TAG_LEARNED, learnedList);
 
-            // クライアントへ同期。新しいパケットクラスを作成済みである前提です。
+            // クライアントへ同期
             CompoundTag syncData = new CompoundTag();
             syncData.put(TAG_LEARNED, learnedList);
-            ModNetwork.sendToClient(new SyncLearnedSpellsPacket(syncData), player);
+            ModNetwork.sendToClient(new ModNetwork.SyncSpellDataPacket(syncData), player);
         }
     }
 
     /**
      * 習得済みかチェック
      */
-    public static boolean hasLearned(Player player, AbstractMagic spell) {
+    public static boolean hasLearned(Player player, Spell spell) {
         ListTag learnedList = player.getPersistentData().getList(TAG_LEARNED, Tag.TAG_STRING);
         String targetId = spell.getSpellId().toString();
 
@@ -84,43 +85,48 @@ public class SpellManager {
     /**
      * スロットに魔法をセットする
      */
-    public static void setSpellAt(Player player, int slot, AbstractMagic spell) {
-        if (slot < 0 || slot >= 5) return;
+    public static void setSpellAt(Player player, int slot, Spell spell) {
+        if (slot < 0 || slot >= MAX_SPELL_SLOTS) return;
 
         CompoundTag data = player.getPersistentData();
         ListTag equippedList = data.getList(TAG_EQUIPPED, Tag.TAG_STRING);
 
-        while (equippedList.size() < 5) {
+        while (equippedList.size() < MAX_SPELL_SLOTS) {
             equippedList.add(StringTag.valueOf("none"));
         }
 
         equippedList.set(slot, StringTag.valueOf(spell.getSpellId().toString()));
         data.put(TAG_EQUIPPED, equippedList);
 
-        // ⭐修正: サーバー側で実行されている場合、クライアントへ同期を送る
+        // サーバー側で実行されている場合、クライアントへ同期を送る
         if (player instanceof ServerPlayer serverPlayer) {
             CompoundTag syncData = new CompoundTag();
             syncData.put(TAG_EQUIPPED, equippedList);
-            ModNetwork.sendToClient(new SyncLearnedSpellsPacket(syncData), serverPlayer);
+            ModNetwork.sendToClient(new ModNetwork.SyncSpellDataPacket(syncData), serverPlayer);
         }
     }
 
-    public static List<AbstractMagic> getEquippedSpells(Player player) {
-        List<AbstractMagic> spells = new ArrayList<>();
+    /**
+     * 装備中の魔法リストを取得
+     */
+    public static List<Spell> getEquippedSpells(Player player) {
+        List<Spell> spells = new ArrayList<>();
         ListTag list = player.getPersistentData().getList(TAG_EQUIPPED, Tag.TAG_STRING);
 
         for (int i = 0; i < list.size(); i++) {
             String idStr = list.getString(i);
-            // ⭐修正: "none" の場合は飛ばす
             if (idStr.equals("none")) continue;
 
             ResourceLocation id = new ResourceLocation(idStr);
-            AbstractMagic magic = SpellRegistry.REGISTRY.get().getValue(id);
-            if (magic != null) spells.add(magic);
+            Spell spell = SpellRegistry.REGISTRY.get().getValue(id);
+            if (spell != null) spells.add(spell);
         }
         return spells;
     }
 
+    /**
+     * 現在選択中のスロットインデックスを取得
+     */
     public static int getSelectedIndex(Player player) {
         return player.getPersistentData().getInt(TAG_SELECTED_INDEX);
     }

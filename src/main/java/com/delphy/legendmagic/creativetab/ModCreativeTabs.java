@@ -1,4 +1,4 @@
-package com.delphy.legendmagic.create;
+package com.delphy.legendmagic.creativetab;
 
 import com.delphy.legendmagic.LegendMagic;
 import com.delphy.legendmagic.item.LegendMagicItems;

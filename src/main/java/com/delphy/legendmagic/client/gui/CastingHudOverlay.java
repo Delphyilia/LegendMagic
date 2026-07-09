@@ -10,9 +10,13 @@ import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+/**
+ * 詠唱中のHUDオーバーレイ表示。
+ * 詠唱時間のカウントダウンと魔法名を画面中央に描画する。
+ */
 @Mod.EventBusSubscriber(modid = LegendMagic.MODID, value = Dist.CLIENT)
-public class CastingGui {
-    // 魔方陣のテクスチャ（後で作る必要があります）
+public class CastingHudOverlay {
+    // 魔方陣のテクスチャ（将来の実装用）
     private static final ResourceLocation MAGIC_CIRCLE = new ResourceLocation(LegendMagic.MODID, "textures/gui/magic_circle.png");
 
     @SubscribeEvent
@@ -25,14 +29,14 @@ public class CastingGui {
         int y = event.getWindow().getGuiScaledHeight() / 2;
 
         // 1. 残り秒数の表示
-        float seconds = (float)CastingManager.getRemainingTicks() / 20.0f;
+        float seconds = (float) CastingManager.getRemainingTicks() / 20.0f;
         String text = String.format("%.1f s", seconds);
         graphics.drawCenteredString(mc.font, text, x, y + 30, 0x00FFFF);
 
         // 2. 魔法名の表示
-        graphics.drawCenteredString(mc.font, "詠唱中: " + CastingManager.getActiveSpell().getName(), x, y + 45, 0xFFFFFF);
+        graphics.drawCenteredString(mc.font, "詠唱中: " + CastingManager.getCastingSpell().getName(), x, y + 45, 0xFFFFFF);
 
-        // 3. 魔方陣の描画 (回転させるとカッコいい)
+        // 3. 魔方陣の描画 (将来実装)
         // graphics.pose().pushPose();
         // graphics.pose().translate(x, y, 0);
         // graphics.pose().mulPose(Axis.ZP.rotationDegrees(System.currentTimeMillis() / 10 % 360));

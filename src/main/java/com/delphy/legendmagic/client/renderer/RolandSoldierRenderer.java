@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 public class RolandSoldierRenderer
         extends HumanoidMobRenderer<RolandSoldierEntity, HumanoidModel<RolandSoldierEntity>> {
 
-    @SuppressWarnings("remuval")
     private static final ResourceLocation TEXTURE =
             new ResourceLocation(
                     LegendMagic.MODID,

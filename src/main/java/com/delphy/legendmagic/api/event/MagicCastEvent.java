@@ -1,6 +1,6 @@
 package com.delphy.legendmagic.api.event;
 
-import com.delphy.legendmagic.api.AbstractMagic;
+import com.delphy.legendmagic.api.Spell;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -9,13 +9,13 @@ import net.minecraftforge.eventbus.api.Event;
  */
 public class MagicCastEvent extends Event {
     private final LivingEntity caster;
-    private final AbstractMagic magic;
+    private final Spell magic;
 
-    public MagicCastEvent(LivingEntity caster, AbstractMagic magic) {
+    public MagicCastEvent(LivingEntity caster, Spell magic) {
         this.caster = caster;
         this.magic = magic;
     }
 
     public LivingEntity getCaster() { return caster; }
-    public AbstractMagic getMagic() { return magic; }
+    public Spell getMagic() { return magic; }
 }

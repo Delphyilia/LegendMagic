@@ -1,18 +1,19 @@
 package com.delphy.legendmagic.magic.roland;
 
 import com.delphy.legendmagic.LegendMagic;
-import com.delphy.legendmagic.api.AbstractMagic;
+import com.delphy.legendmagic.api.Spell;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class Izuchi implements AbstractMagic {
+public class Izuchi implements Spell {
 
     private static final ResourceLocation SPELL_ID = new ResourceLocation(LegendMagic.MODID, "izuchi");
 
@@ -30,12 +31,29 @@ public class Izuchi implements AbstractMagic {
     @Override
     public String getDescription() { return "視線の先の敵に直接ダメージを与え、青い火花を散らす。"; }
 
+    /**
+     * いづち専用の詠唱中エフェクト: 周囲に演出用の雷を漂わせる
+     */
+    @Override
+    public void onCastingTick(Player player) {
+        if (player.level().random.nextFloat() < 0.2f) {
+            double x = player.getX() + (player.getRandom().nextDouble() - 0.5) * 6;
+            double z = player.getZ() + (player.getRandom().nextDouble() - 0.5) * 6;
+
+            LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level());
+            if (bolt != null) {
+                bolt.moveTo(x, player.getY(), z);
+                bolt.setVisualOnly(true);
+                player.level().addFreshEntity(bolt);
+            }
+        }
+    }
+
     @Override
     public void execute(LivingEntity caster) {
         ServerLevel level = (ServerLevel) caster.level();
         double range = 30.0;
 
-        // 独自ダメージ計算
         float damage = calculateDamage(caster);
 
         // ターゲットの特定
@@ -53,18 +71,18 @@ public class Izuchi implements AbstractMagic {
         Vec3 actualEnd = (entityHit != null) ? entityHit.getLocation() : end;
 
         if (entityHit != null && entityHit.getEntity() instanceof LivingEntity livingTarget) {
-            // 1. 魔法属性ダメージの適用
+            // 魔法属性ダメージの適用
             livingTarget.hurt(caster.damageSources().magic(), damage);
 
-            // 2. ターゲットに「見た目だけの雷」を落とす
+            // ターゲットに「見た目だけの雷」を落とす
             LightningBolt visualBolt = EntityType.LIGHTNING_BOLT.create(level);
             if (visualBolt != null) {
                 visualBolt.moveTo(livingTarget.position());
-                visualBolt.setVisualOnly(true); // ダメージ・炎上・破壊を無効化
+                visualBolt.setVisualOnly(true);
                 level.addFreshEntity(visualBolt);
             }
 
-            // 3. ヒット時のパーティクル
+            // ヒット時のパーティクル
             level.sendParticles(ParticleTypes.ELECTRIC_SPARK,
                     livingTarget.getX(), livingTarget.getY() + 1, livingTarget.getZ(),
                     20, 0.2, 0.5, 0.2, 0.1);
@@ -81,14 +99,10 @@ public class Izuchi implements AbstractMagic {
         float baseDamage = 10.0F;
         float multiplier = 1.0F;
 
-        // ⭐修正：casterがプレイヤーの場合のみ、複写眼のチェックを行う
-        if (caster instanceof net.minecraft.world.entity.player.Player player) {
+        if (caster instanceof Player player) {
             if (com.delphy.legendmagic.util.EyeUtil.hasAlphaStigma(player)) {
-                multiplier = 2.0F; // プレイヤーかつ複写眼持ちなら2倍
+                multiplier = 2.0F; // 複写眼持ちなら2倍
             }
-        } else {
-            // モブが撃つ場合の補正が必要ならここに書く（例：モブの攻撃力に依存させるなど）
-            // 今はそのまま multiplier = 1.0F
         }
 
         return baseDamage * multiplier;
@@ -104,7 +118,6 @@ public class Izuchi implements AbstractMagic {
             double y = start.y + (end.y - start.y) * ratio;
             double z = start.z + (end.z - start.z) * ratio;
 
-            // ソウルファイアのパーティクルを軌跡として使用
             level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, x, y, z, 1, 0, 0, 0, 0);
         }
     }

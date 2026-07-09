@@ -1,16 +1,10 @@
 package com.delphy.legendmagic.entity;
 
-import com.delphy.legendmagic.api.AbstractMagic;
+import com.delphy.legendmagic.api.Spell;
 import com.delphy.legendmagic.api.event.MagicCastEvent;
 import com.delphy.legendmagic.entity.ai.MagicAttackGoal;
-import com.delphy.legendmagic.magic.estabul.SpiritBeast;
 import com.delphy.legendmagic.magic.roland.Izuchi;
-import com.delphy.legendmagic.magic.runa.SukuinoIkazuchiwo;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -23,8 +17,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class RolandSoldierEntity extends Monster {
 
-    // この兵士が使う魔法（例としてライトニング1）
-    private static final AbstractMagic SPELL = new Izuchi();
+    // この兵士が使う魔法
+    private static final Spell SPELL = new Izuchi();
 
     public RolandSoldierEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
@@ -50,25 +44,14 @@ public class RolandSoldierEntity extends Monster {
                 .add(Attributes.MAX_HEALTH, 20.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
                 .add(Attributes.ATTACK_DAMAGE, 4.0D)
-                .add(Attributes.FOLLOW_RANGE, 32.0D); // 索敵範囲を広げる
+                .add(Attributes.FOLLOW_RANGE, 32.0D);
     }
 
     /**
      * 魔法の発動実行
      */
-    public void performMagicAttack(AbstractMagic spell) {
+    public void performMagicAttack(Spell spell) {
         if (!this.level().isClientSide) {
-            /*
-            // 敵が詠唱文を「叫ぶ」演出
-            Component chantText = Component.literal(this.getName().getString() + "「" + spell.getChant() + "」").withStyle(ChatFormatting.RED); // 敵は赤色などで差別化
-
-            // 周囲のプレイヤー全員に聞こえるようにする
-            for (ServerPlayer player : this.level().getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(20))) {
-                player.sendSystemMessage(chantText);
-            }
-            */
-
-            // 魔法の実行
             spell.execute(this);
 
             // イベント発火（学習用）
