@@ -5,6 +5,7 @@ import com.delphy.legendmagic.api.Spell;
 import com.delphy.legendmagic.magic.estabul.SpiritBeast;
 import com.delphy.legendmagic.magic.roland.Izuchi;
 import com.delphy.legendmagic.magic.runa.SukuinoIkazuchiwo;
+import com.delphy.legendmagic.magic.runa.SukuinoKazewo;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +38,7 @@ public class SpellRegistry {
         SPELLS.register("izuchi", Izuchi::new);
         SPELLS.register("spirit_beast", SpiritBeast::new);
         SPELLS.register("sukuino_ikazuchiwo", SukuinoIkazuchiwo::new);
+        SPELLS.register("sukuino_kazewo", SukuinoKazewo::new);
 
         // Forgeのイベントバスに登録
         SPELLS.register(eventBus);
