@@ -1,7 +1,6 @@
-/*
 package com.delphy.legendmagic.item;
 
-import com.delphy.legendmagic.entity.THUNDERWolfEntity;
+import com.delphy.legendmagic.entity.ThunderWolfEntity;
 import com.delphy.legendmagic.entity.ModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -17,9 +16,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class RingofThunderBeasts extends Item {
+public class RingofThunderBeastsItem extends Item {
 
-    public RingofThunderBeasts(Properties properties) {
+    public RingofThunderBeastsItem(Properties properties) {
         super(properties);
     }
 
@@ -56,10 +55,8 @@ public class RingofThunderBeasts extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        tooltipComponents.add(Component.literal("§7右クリックで光オオカミを2体召喚する。"));
+        tooltipComponents.add(Component.literal("§7右クリックで雷オオカミを2体召喚する。"));
         tooltipComponents.add(Component.literal("§7召喚されたオオカミは5分間共に戦う。"));
         tooltipComponents.add(Component.literal("§cクールダウン: 10分"));
     }
 }
-
-*/

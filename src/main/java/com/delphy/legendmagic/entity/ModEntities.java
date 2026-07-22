@@ -34,6 +34,15 @@ public class ModEntities {
                             .build("dark_wolf")
             );
 
+    public static final RegistryObject<EntityType<ThunderWolfEntity>> THUNDER_WOLF =
+            ENTITIES.register("thunder_wolf",
+                    () -> EntityType.Builder
+                            .of(ThunderWolfEntity::new, MobCategory.CREATURE)
+                            .sized(0.6F, 0.85F)
+                            .clientTrackingRange(10)
+                            .build("thunder_wolf")
+            );
+
     public static void register(IEventBus bus) {
         ENTITIES.register(bus);
     }
@@ -43,5 +52,6 @@ public class ModEntities {
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(ROLAND_SOLDIER.get(), RolandSoldierEntity.createAttributes().build());
         event.put(DARK_WOLF.get(), DarkWolfEntity.createAttributes().build());
+        event.put(THUNDER_WOLF.get(), ThunderWolfEntity.createAttributes().build());
     }
 }

@@ -72,6 +72,10 @@ public class LegendMagicItems {
     public static final RegistryObject<Item> RING_OF_THE_DARK_EMPEROR = ITEMS.register("ring_of_the_dark_emperor",
             () -> new RingOfTheDarkEmperorItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
+    // 雷獣の指輪
+    public static final RegistryObject<Item> RING_OF_THUNDER_BEASTS = ITEMS.register("ring_of_thunder_beasts",
+            () -> new RingofThunderBeastsItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+
     // アイテムを登録
     // LegendMagic.javaで呼び出すことで全アイテムが登録される
     public static void register(IEventBus eventBus) {
