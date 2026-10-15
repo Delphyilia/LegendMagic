@@ -11,5 +11,15 @@
   "item.legendmagic.roland_soldier_spawn_egg": "Roland Soldier Spawn Egg",
   "entity.legendmagic.thunder_wolf": "Thunder Wolf",
   "entity.legendmagic.dark_wolf": "Dark Wolf",
-  "entity.legendmagic.roland_soldier": "Roland Soldier"
+  "entity.legendmagic.roland_soldier": "Roland Soldier",
+  "item.legendmagic.iino_doue": "Iino Doue",
+  "spell.legendmagic.izuchi": "Izuchi",
+  "spell.legendmagic.chigashira": "Chigashira",
+  "spell.legendmagic.sukuino_kazewo": "Wind of Salvation",
+  "spell.legendmagic.sukuino_honoowo": "Flame of Salvation",
+  "spell.legendmagic.sukuino_ikazuchiwo": "Lightning of Salvation",
+  "spell.legendmagic.spirit_beast": "Spirit Beast",
+  "spell.legendmagic.light_spirit_beast": "Light Spirit Beast",
+  "spell.legendmagic.sky_dancing_beast": "Sky Dancing Beast",
+  "spell.legendmagic.vortex_of_spirits": "Vortex of Spirits"
 }

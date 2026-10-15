@@ -2,8 +2,13 @@ package com.delphy.legendmagic.magic;
 
 import com.delphy.legendmagic.LegendMagic;
 import com.delphy.legendmagic.api.Spell;
+import com.delphy.legendmagic.magic.estabul.LightSpiritBeast;
+import com.delphy.legendmagic.magic.estabul.SkyDancingBeast;
 import com.delphy.legendmagic.magic.estabul.SpiritBeast;
+import com.delphy.legendmagic.magic.estabul.VortexOfSpirits;
+import com.delphy.legendmagic.magic.roland.Chigashira;
 import com.delphy.legendmagic.magic.roland.Izuchi;
+import com.delphy.legendmagic.magic.runa.SukuinoHonoowo;
 import com.delphy.legendmagic.magic.runa.SukuinoIkazuchiwo;
 import com.delphy.legendmagic.magic.runa.SukuinoKazewo;
 import net.minecraft.core.Registry;
@@ -34,11 +39,20 @@ public class SpellRegistry {
             SPELLS.makeRegistry(() -> new RegistryBuilder<Spell>().disableSaving());
 
     public static void register(IEventBus eventBus) {
-        // 各魔法クラスを登録
+        // ローランド魔法体系
         SPELLS.register("izuchi", Izuchi::new);
-        SPELLS.register("spirit_beast", SpiritBeast::new);
-        SPELLS.register("sukuino_ikazuchiwo", SukuinoIkazuchiwo::new);
+        SPELLS.register("chigashira", Chigashira::new);
+
+        // ルーナ魔法体系
         SPELLS.register("sukuino_kazewo", SukuinoKazewo::new);
+        SPELLS.register("sukuino_honoowo", SukuinoHonoowo::new);
+        SPELLS.register("sukuino_ikazuchiwo", SukuinoIkazuchiwo::new);
+
+        // エスタブール魔法体系
+        SPELLS.register("spirit_beast", SpiritBeast::new);
+        SPELLS.register("light_spirit_beast", LightSpiritBeast::new);
+        SPELLS.register("sky_dancing_beast", SkyDancingBeast::new);
+        SPELLS.register("vortex_of_spirits", VortexOfSpirits::new);
 
         // Forgeのイベントバスに登録
         SPELLS.register(eventBus);

@@ -1,6 +1,7 @@
 package com.delphy.legendmagic.magic.runa;
 
 import com.delphy.legendmagic.LegendMagic;
+import com.delphy.legendmagic.api.MagicSystem;
 import com.delphy.legendmagic.api.Spell;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -19,40 +20,57 @@ public class SukuinoIkazuchiwo implements Spell {
     private static final ResourceLocation SPELL_ID = new ResourceLocation(LegendMagic.MODID, "sukuino_ikazuchiwo");
 
     @Override
-    public ResourceLocation getSpellId() { return SPELL_ID; }
+    public ResourceLocation getSpellId() {
+        return SPELL_ID;
+    }
 
     @Override
-    public String getName() { return "救いの雷"; }
+    public String getName() {
+        return "救いの雷";
+    }
 
     @Override
-    public String getChant() { return "点在する神に請う。憐れな我らに救いの雷を"; }
+    public String getChant() {
+        return "天在する神に請う。憐れな我らに、救いの雷を";
+    }
 
     @Override
-    public String getDescription() { return "天から真実の雷を呼び寄せる。"; }
+    public String getDescription() {
+        return "天から真実の天然雷を呼び寄せる。帯電クリーパーや村人の魔女化に利用可能。";
+    }
 
-    // 詠唱時間を3秒（60tick）に設定
     @Override
-    public int getCastTime() { return 60; }
+    public int getCastTime() {
+        return 30; // 1.5秒 (30 ticks)
+    }
+
+    @Override
+    public int getManaCost() {
+        return 20;
+    }
+
+    @Override
+    public MagicSystem getMagicSystem() {
+        return MagicSystem.RUNA;
+    }
 
     @Override
     public void execute(LivingEntity caster) {
-        ServerLevel level = (ServerLevel) caster.level();
-        double range = 25.0;
+        if (!(caster.level() instanceof ServerLevel level)) return;
+        double range = 25.0D;
 
         Vec3 start = caster.getEyePosition();
         Vec3 look;
 
-        // ターゲットがいればその中心を狙う、いなければ正面を向く
         if (caster instanceof Mob mob && mob.getTarget() != null) {
             LivingEntity target = mob.getTarget();
-            look = target.position().add(0, target.getBbHeight() * 0.5, 0).subtract(start).normalize();
+            look = target.position().add(0, target.getBbHeight() * 0.5D, 0).subtract(start).normalize();
         } else {
             look = caster.getLookAngle();
         }
 
-        Vec3 end = start.add(look.x * range, look.y * range, look.z * range);
+        Vec3 end = start.add(look.scale(range));
 
-        // エンティティ（敵）を優先的に探すレイキャスト
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
                 caster, start, end,
                 caster.getBoundingBox().expandTowards(look.scale(range)).inflate(2.0D),
@@ -61,7 +79,6 @@ public class SukuinoIkazuchiwo implements Spell {
         );
 
         Vec3 targetPos;
-
         if (entityHit != null) {
             targetPos = entityHit.getEntity().position();
         } else {
@@ -69,15 +86,13 @@ public class SukuinoIkazuchiwo implements Spell {
             targetPos = blockHit.getLocation();
         }
 
-        // 雷を召喚
+        // 天然の落雷を召喚
         LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
         if (bolt != null) {
             bolt.moveTo(targetPos);
-
             if (caster instanceof ServerPlayer serverPlayer) {
                 bolt.setCause(serverPlayer);
             }
-
             level.addFreshEntity(bolt);
         }
     }

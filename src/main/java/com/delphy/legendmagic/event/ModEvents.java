@@ -34,6 +34,14 @@ public class ModEvents {
     }
 
     @SubscribeEvent
+    public static void onLevelTick(TickEvent.LevelTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && event.level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            // エスタブール魔法「青い渦」の持続処理
+            com.delphy.legendmagic.magic.estabul.VortexManager.tick(serverLevel);
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             ManaManager.syncToClient(serverPlayer);

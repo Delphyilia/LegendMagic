@@ -11,5 +11,15 @@
   "item.legendmagic.roland_soldier_spawn_egg": "ローランド兵のスポーンエッグ",
   "entity.legendmagic.thunder_wolf": "雷オオカミ",
   "entity.legendmagic.dark_wolf": "黒オオカミ",
-  "entity.legendmagic.roland_soldier": "ローランド兵"
+  "entity.legendmagic.roland_soldier": "ローランド兵",
+  "item.legendmagic.iino_doue": "殲滅眼<イーノ・ドゥーエ>",
+  "spell.legendmagic.izuchi": "求めるは雷鳴>>>稲光<いづち>",
+  "spell.legendmagic.chigashira": "求めるは震牙>>>倒地<ちがしら>",
+  "spell.legendmagic.sukuino_kazewo": "救いの風を",
+  "spell.legendmagic.sukuino_honoowo": "救いの炎を",
+  "spell.legendmagic.sukuino_ikazuchiwo": "救いの雷を",
+  "spell.legendmagic.spirit_beast": "我・契約文を捧げ・大地に眠る悪意の精獣を宿す",
+  "spell.legendmagic.light_spirit_beast": "我・契約文を捧げ・大気に眠る光の精獣を宿す",
+  "spell.legendmagic.sky_dancing_beast": "我・契約文を捧げ・天空を踊る光の魔獣を放つ",
+  "spell.legendmagic.vortex_of_spirits": "我・契約文を捧げ・宙を覆う精霊の力を放つ"
 }
