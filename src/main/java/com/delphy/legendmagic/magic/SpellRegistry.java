@@ -42,6 +42,7 @@ public class SpellRegistry {
         // ローランド魔法体系
         SPELLS.register("izuchi", Izuchi::new);
         SPELLS.register("chigashira", Chigashira::new);
+        SPELLS.register("izuchi_death", com.delphy.legendmagic.magic.roland.IzuchiDeath::new);
 
         // ルーナ魔法体系
         SPELLS.register("sukuino_kazewo", SukuinoKazewo::new);

@@ -43,6 +43,26 @@ public class ModEntities {
                             .build("thunder_wolf")
             );
 
+    // ボス「運命の破壊者」
+    public static final RegistryObject<EntityType<DestroyerOfFateEntity>> DESTROYER_OF_FATE =
+            ENTITIES.register("destroyer_of_fate",
+                    () -> EntityType.Builder
+                            .of(DestroyerOfFateEntity::new, MobCategory.MONSTER)
+                            .sized(0.7F, 2.1F)
+                            .clientTrackingRange(16)
+                            .build("destroyer_of_fate")
+            );
+
+    // 中ボス「ローランド近衛隊長」
+    public static final RegistryObject<EntityType<RolandGuardCaptainEntity>> ROLAND_GUARD_CAPTAIN =
+            ENTITIES.register("roland_guard_captain",
+                    () -> EntityType.Builder
+                            .of(RolandGuardCaptainEntity::new, MobCategory.MONSTER)
+                            .sized(0.65F, 2.0F)
+                            .clientTrackingRange(10)
+                            .build("roland_guard_captain")
+            );
+
     public static void register(IEventBus bus) {
         ENTITIES.register(bus);
     }
@@ -53,5 +73,26 @@ public class ModEntities {
         event.put(ROLAND_SOLDIER.get(), RolandSoldierEntity.createAttributes().build());
         event.put(DARK_WOLF.get(), DarkWolfEntity.createAttributes().build());
         event.put(THUNDER_WOLF.get(), ThunderWolfEntity.createAttributes().build());
+        event.put(DESTROYER_OF_FATE.get(), DestroyerOfFateEntity.createAttributes().build());
+        event.put(ROLAND_GUARD_CAPTAIN.get(), RolandGuardCaptainEntity.createAttributes().build());
+    }
+
+    // スポーンルール登録（夜間の地上スポーン）
+    @SubscribeEvent
+    public static void registerSpawnPlacements(net.minecraftforge.event.entity.SpawnPlacementRegisterEvent event) {
+        event.register(
+                ROLAND_SOLDIER.get(),
+                net.minecraft.world.entity.SpawnPlacements.Type.ON_GROUND,
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                net.minecraft.world.entity.monster.Monster::checkMonsterSpawnRules,
+                net.minecraftforge.event.entity.SpawnPlacementRegisterEvent.Operation.REPLACE
+        );
+        event.register(
+                ROLAND_GUARD_CAPTAIN.get(),
+                net.minecraft.world.entity.SpawnPlacements.Type.ON_GROUND,
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                net.minecraft.world.entity.monster.Monster::checkMonsterSpawnRules,
+                net.minecraftforge.event.entity.SpawnPlacementRegisterEvent.Operation.REPLACE
+        );
     }
 }

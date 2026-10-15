@@ -12,18 +12,20 @@ public class EyeUtil {
     /**
      * 複写眼（アルファ・スティグマ）を装備しているか
      */
-    public static boolean hasAlphaStigma(Player player) {
+    public static boolean hasAlphaStigma(net.minecraft.world.entity.LivingEntity entity) {
+        if (entity == null) return false;
         return CuriosApi.getCuriosHelper()
-                .findFirstCurio(player, LegendMagicItems.ALPHA_STIGMA.get())
+                .findFirstCurio(entity, LegendMagicItems.ALPHA_STIGMA.get())
                 .isPresent();
     }
 
     /**
      * 殲滅眼（イーノ・ドゥーエ）を装備しているか
      */
-    public static boolean hasIinoDoue(Player player) {
+    public static boolean hasIinoDoue(net.minecraft.world.entity.LivingEntity entity) {
+        if (entity == null) return false;
         return CuriosApi.getCuriosHelper()
-                .findFirstCurio(player, LegendMagicItems.IINO_DOUE.get())
+                .findFirstCurio(entity, LegendMagicItems.IINO_DOUE.get())
                 .isPresent();
     }
 

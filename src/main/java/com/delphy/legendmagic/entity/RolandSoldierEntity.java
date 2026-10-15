@@ -15,7 +15,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 
-public class RolandSoldierEntity extends Monster {
+import com.delphy.legendmagic.entity.ai.MagicCaster;
+
+public class RolandSoldierEntity extends Monster implements MagicCaster {
 
     // この兵士が使う魔法
     private static final Spell SPELL = new Izuchi();

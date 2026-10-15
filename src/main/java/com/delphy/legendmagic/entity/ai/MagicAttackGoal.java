@@ -1,19 +1,19 @@
 package com.delphy.legendmagic.entity.ai;
 
 import com.delphy.legendmagic.api.Spell;
-import com.delphy.legendmagic.entity.RolandSoldierEntity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
 
-public class MagicAttackGoal extends Goal {
-    private final RolandSoldierEntity mob;
+public class MagicAttackGoal<T extends PathfinderMob & MagicCaster> extends Goal {
+    private final T mob;
     private final Spell spell;
     private int attackTimer = -1;
     private final int castTime;
 
-    public MagicAttackGoal(RolandSoldierEntity mob, Spell spell) {
+    public MagicAttackGoal(T mob, Spell spell) {
         this.mob = mob;
         this.spell = spell;
         this.castTime = spell.getCastTime();

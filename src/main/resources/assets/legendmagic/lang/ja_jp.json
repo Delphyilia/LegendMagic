@@ -24,5 +24,11 @@
   "spell.legendmagic.vortex_of_spirits": "我・契約文を捧げ・宙を覆う精霊の力を放つ",
   "item.legendmagic.relic_shard": "遺物の欠片",
   "block.legendmagic.relic_altar": "遺物の台座",
-  "block.legendmagic.offering_pedestal": "供物の台座"
+  "block.legendmagic.offering_pedestal": "供物の台座",
+  "spell.legendmagic.izuchi_death": "稲死光<いづち>",
+  "item.legendmagic.inner_knife": "内面のナイフ",
+  "item.legendmagic.core_of_fate": "破壊者の魔導核",
+  "entity.legendmagic.roland_guard_captain": "ローランド近衛隊長",
+  "entity.legendmagic.destroyer_of_fate": "運命の破壊者",
+  "block.legendmagic.altar_of_fate": "運命の祭壇"
 }

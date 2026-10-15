@@ -4,8 +4,9 @@ import com.delphy.legendmagic.LegendMagic;
 import com.delphy.legendmagic.entity.ModEntities;
 import com.delphy.legendmagic.client.renderer.RolandSoldierRenderer;
 import com.delphy.legendmagic.client.renderer.DarkWolfRenderer;
-
 import com.delphy.legendmagic.client.renderer.ThunderWolfRenderer;
+import com.delphy.legendmagic.client.renderer.DestroyerOfFateRenderer;
+import com.delphy.legendmagic.client.renderer.RolandGuardCaptainRenderer;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,6 +36,14 @@ public class ClientSetup {
         EntityRenderers.register(
                 ModEntities.THUNDER_WOLF.get(),
                 ThunderWolfRenderer::new
+        );
+        EntityRenderers.register(
+                ModEntities.DESTROYER_OF_FATE.get(),
+                DestroyerOfFateRenderer::new
+        );
+        EntityRenderers.register(
+                ModEntities.ROLAND_GUARD_CAPTAIN.get(),
+                RolandGuardCaptainRenderer::new
         );
 
         // ⭐ ブロックエンティティレンダラー登録（浮遊アイテム描画）

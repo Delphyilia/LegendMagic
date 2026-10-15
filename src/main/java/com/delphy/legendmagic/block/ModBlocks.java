@@ -36,6 +36,15 @@ public class ModBlocks {
                     .noOcclusion()),
             Rarity.RARE);
 
+    // 運命の祭壇（Cataclysm風ボススポナー）
+    public static final RegistryObject<Block> ALTAR_OF_FATE = registerBlock("altar_of_fate",
+            () -> new AltarOfFateBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .strength(50.0F, 1200.0F) // 超高耐久
+                    .sound(SoundType.ANVIL)
+                    .noOcclusion()),
+            Rarity.EPIC);
+
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, Rarity rarity) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn, rarity);

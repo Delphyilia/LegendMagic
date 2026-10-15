@@ -1,0 +1,24 @@
+{
+  "type": "legendmagic:magic_laboratory",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "layers": [
+        {
+          "block": "minecraft:bedrock",
+          "height": 1
+        },
+        {
+          "block": "minecraft:deepslate_tiles",
+          "height": 30
+        },
+        {
+          "block": "minecraft:polished_blackstone_bricks",
+          "height": 1
+        }
+      ],
+      "biome": "minecraft:the_void",
+      "structure_overrides": []
+    }
+  }
+}

@@ -24,5 +24,11 @@
   "spell.legendmagic.vortex_of_spirits": "Vortex of Spirits",
   "item.legendmagic.relic_shard": "Relic Shard",
   "block.legendmagic.relic_altar": "Relic Altar",
-  "block.legendmagic.offering_pedestal": "Offering Pedestal"
+  "block.legendmagic.offering_pedestal": "Offering Pedestal",
+  "spell.legendmagic.izuchi_death": "Izuchi of Death",
+  "item.legendmagic.inner_knife": "Knife of Inner Self",
+  "item.legendmagic.core_of_fate": "Core of the Destroyer",
+  "entity.legendmagic.roland_guard_captain": "Roland Guard Captain",
+  "entity.legendmagic.destroyer_of_fate": "The Destroyer of Fate",
+  "block.legendmagic.altar_of_fate": "Altar of Fate"
 }

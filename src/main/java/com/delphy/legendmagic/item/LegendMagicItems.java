@@ -84,6 +84,14 @@ public class LegendMagicItems {
     public static final RegistryObject<Item> IINO_DOUE = ITEMS.register("iino_doue",
             () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
+    // 内面のナイフ（専用ディメンション転移＆ボスリマッチ用キーアイテム）
+    public static final RegistryObject<Item> INNER_KNIFE = ITEMS.register("inner_knife",
+            () -> new InnerKnifeItem(new Item.Properties()));
+
+    // 破壊者の魔導核（上位魔法「稲死光」解放アイテム）
+    public static final RegistryObject<Item> CORE_OF_FATE = ITEMS.register("core_of_fate",
+            () -> new CoreOfFateItem(new Item.Properties()));
+
     // アイテムを登録
     // LegendMagic.javaで呼び出すことで全アイテムが登録される
     public static void register(IEventBus eventBus) {

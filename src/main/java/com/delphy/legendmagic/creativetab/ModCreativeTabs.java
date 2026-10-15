@@ -35,6 +35,9 @@ public class ModCreativeTabs {
                                 output.accept(LegendMagicItems.IINO_DOUE.get());
                                 output.accept(com.delphy.legendmagic.block.ModBlocks.RELIC_ALTAR.get());
                                 output.accept(com.delphy.legendmagic.block.ModBlocks.OFFERING_PEDESTAL.get());
+                                output.accept(LegendMagicItems.INNER_KNIFE.get());
+                                output.accept(LegendMagicItems.CORE_OF_FATE.get());
+                                output.accept(com.delphy.legendmagic.block.ModBlocks.ALTAR_OF_FATE.get());
                             })
                             .build()
             );

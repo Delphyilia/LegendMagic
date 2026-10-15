@@ -1,5 +1,36 @@
 # AI 変更履歴 (AICHANGELOG.md)
 
+## [2026-10-15] Phase 7: エンドコンテンツ（新ディメンション＆ボス「運命の破壊者」・稲死光）の実装完了
+
+### 変更概要
+- **ローランド上位禁呪「稲死光<いづち>（IzuchiDeath）」**:
+  - `Spell` インターフェースを実装。`getCastTime() == 0` の完全無詠唱・無陣・即発動。
+  - 発動時、術者の頭上に水平な横向きの雷（横雷）を瞬時に物質化させ、視線方向の対象Mobへ超高速で射出。基本36ダメージ（複写眼時72ダメージ）＋ノックバック＋演出用落雷召喚。
+  - `SpellRegistry` に登録し、言語ファイル（`ja_jp.json`, `en_us.json`）を整備。
+- **キーアイテム「内面のナイフ（InnerKnifeItem）」**:
+  - 右クリックで空間を切り裂く裂断エフェクトとともに専用ディメンション「魔法研究所」へ転移（研究所内では現実世界へ帰還）。
+  - 到着地点周囲の床面安全確保（`ensureLabPlatform`）を実装。
+- **新ディメンション「魔法研究所（magic_laboratory）」**:
+  - データパック定義（`dimension/magic_laboratory.json`, `dimension_type/magic_laboratory.json`）により、磨かれたブラックストーンレンガで構成された神秘的な異空間を生成。
+- **最高峰ボス「運命の破壊者（DestroyerOfFateEntity）」**:
+  - HP 600、防御力 14、ノックバック耐性 1.0、専用パープルボスバー。
+  - 魔法の天才AI（`DestroyerMagicGoal`）: 予備動作なしの「稲死光」乱射、地面から隆起し殲滅眼を貫通する「倒地」、被弾時に確率でターゲット周辺へ残影（ポータル演出）を残して転移する高速機動。
+  - 自然消滅無効、撃破時に「破壊者の魔導核」を確定ドロップ。
+- **Cataclysm風ボススポナー「運命の祭壇（AltarOfFateBlock）」**:
+  - 魔法研究所の最奥に配置される高耐久の専用祭壇。
+  - 「内面のナイフ」を持って右クリックすることで、落雷と暗黒の衝撃波とともに「運命の破壊者」を何度でもリマッチ召喚可能（既存ボスの重複召喚防止チェック付き）。
+- **撃破報酬「破壊者の魔導核（CoreOfFateItem）」**:
+  - 使用することで、プレイヤーの魔導書にローランド上位魔法「稲死光<いづち>」を恒久解禁・記録。
+- **中ボス「ローランド近衛隊長（RolandGuardCaptainEntity）」＆オーバーワールド夜間スポーン**:
+  - HP 100の精鋭。近接剣撃＋「稲光」を使用し、討伐時に「内面のナイフ」を確定ドロップ。
+  - `BiomeModifier`（`spawn_roland_soldier.json`, `spawn_roland_guard_captain.json`）および `SpawnPlacementRegisterEvent` により、夜間のオーバーワールドへの自然徘徊スポーンを設定。
+- **モデル・テクスチャ・レンダラー**:
+  - 人型レンダラー（`DestroyerOfFateRenderer`, `RolandGuardCaptainRenderer`）を `ClientSetup` に登録。
+  - 16x16 アイテムテクスチャ（`inner_knife.png`, `core_of_fate.png`）およびブロックモデルを作成。
+- `.\gradlew.bat compileJava` によるコンパイル検証に成功（Exit code 0）。
+
+---
+
 ## [2026-10-15] Phase 6: 魔眼システム（複写眼・殲滅眼）と魔導書の実装完了
 
 ### 変更概要
