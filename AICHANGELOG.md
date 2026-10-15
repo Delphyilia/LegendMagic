@@ -1,5 +1,28 @@
 # AI 変更履歴 (AICHANGELOG.md)
 
+## [2026-10-15] Phase 8: 敵魔導兵スポーン・各国構造物・チェストルート・総合調整の実装完了
+
+### 変更概要
+- **バニラダンジョン＆チェストルート設定（Global Loot Modifier）**:
+  - `global_loot_modifiers.json` に `relic_shard`（遺物の欠片、確率25%）および `ring_of_thunder_beasts`（雷獣の指輪、確率5%）を追加。
+  - バニラの全ダンジョン・要塞・古代都市等のチェストから忘却欠片（指輪2種）および進化素材「遺物の欠片」が自然に出現するように設定。
+- **各国構造物チェストルートテーブル（Loot Tables）**:
+  - `chests/roland_fortress.json`: 遺物の欠片、クモの目、エンダーアイ、長剣、だんご、鉄インゴット。
+  - `chests/estabul_lab.json`: 遺物の欠片、魔導書、ラピスラズリ、アメジストの欠片、ガラス瓶。
+  - `chests/runa_shrine.json`: 遺物の欠片、だんごシール、だんご生地、金リンゴ、エメラルド、パン。
+- **各国構造物のワールド生成（Worldgen Structures）**:
+  - データパック定義（`worldgen/structure/`, `worldgen/structure_set/`, `worldgen/template_pool/`）を完備。
+  - ローランド要塞（`roland_fortress`）: 平原・森林バイオームに生成。ローランド兵および近衛隊長が固定スポーン。
+  - エスタブール研究所（`estabul_lab`）: 暗い森・タイガバイオームに生成。
+  - ルーナ神殿（`runa_shrine`）: サバンナ・山岳バイオームに生成。
+- **魔導書アセット（Grimoire Asset）の完備**:
+  - `grimoire.png`（濃紺・金金具・魔眼レリーフの16x16ドット絵テクスチャ）および `grimoire.json` モデルを作成・登録。
+- **全体の総合ビルド検証（Ground Truth）**:
+  - `.\gradlew.bat compileJava` および `.\gradlew.bat jar` による完全ビルドに成功（Exit code 0）。
+  - 全クラス・テクスチャ・モデル・言語ファイル・レシピ・ディメンション・構造物の整合性を確認。
+
+---
+
 ## [2026-10-15] Phase 7: エンドコンテンツ（新ディメンション＆ボス「運命の破壊者」・稲死光）の実装完了
 
 ### 変更概要

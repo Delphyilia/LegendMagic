@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#minecraft:is_overworld",
+  "step": "surface_structures",
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "full",
+      "spawns": [
+        {
+          "type": "legendmagic:rolandsoldier",
+          "weight": 80,
+          "minCount": 2,
+          "maxCount": 4
+        },
+        {
+          "type": "legendmagic:roland_guard_captain",
+          "weight": 20,
+          "minCount": 1,
+          "maxCount": 1
+        }
+      ]
+    }
+  },
+  "start_pool": "legendmagic:roland_fortress/start_pool",
+  "size": 2,
+  "start_height": {
+    "absolute": 0
+  },
+  "project_start_to_heightmap": "WORLD_SURFACE_WG",
+  "max_distance_from_center": 80,
+  "use_expansion_hack": false
+}

@@ -1,0 +1,10 @@
+{
+  "type": "legendmagic:add_item",
+  "conditions": [
+    {
+      "condition": "minecraft:random_chance",
+      "chance": 0.25
+    }
+  ],
+  "item": "legendmagic:relic_shard"
+}
