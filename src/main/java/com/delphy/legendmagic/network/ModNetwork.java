@@ -59,6 +59,24 @@ public class ModNetwork {
                 SetSpellSlotPacket::decode,
                 SetSpellSlotPacket::handle
         );
+
+        // 4. マナ同期パケット (Server -> Client)
+        CHANNEL.registerMessage(
+                packetId++,
+                SyncManaPacket.class,
+                SyncManaPacket::encode,
+                SyncManaPacket::decode,
+                SyncManaPacket::handle
+        );
+
+        // 5. 選択スロット変更パケット (Client -> Server)
+        CHANNEL.registerMessage(
+                packetId++,
+                SelectSpellIndexPacket.class,
+                SelectSpellIndexPacket::encode,
+                SelectSpellIndexPacket::decode,
+                SelectSpellIndexPacket::handle
+        );
     }
 
     // ========== 送信ヘルパー ==========
@@ -112,9 +130,17 @@ public class ModNetwork {
                 Spell spell = SpellRegistry.REGISTRY.get().getValue(msg.spellId);
                 if (spell != null) {
                     if (msg.isStart) {
+                        if (com.delphy.legendmagic.magic.ManaManager.getMana(player) < spell.getManaCost()) {
+                            player.displayClientMessage(net.minecraft.network.chat.Component.literal("§cマナが足りません！ (必要: " + spell.getManaCost() + ")"), true);
+                            return;
+                        }
                         spell.announceChant(player);
                     } else {
-                        spell.execute(player);
+                        if (com.delphy.legendmagic.magic.ManaManager.consumeMana(player, spell.getManaCost())) {
+                            spell.execute(player);
+                        } else {
+                            player.displayClientMessage(net.minecraft.network.chat.Component.literal("§cマナが足りません！"), true);
+                        }
                     }
                 }
             });
@@ -179,6 +205,64 @@ public class ModNetwork {
                     if (spell != null) {
                         SpellManager.setSpellAt(player, msg.slot, spell);
                     }
+                }
+            });
+            ctx.get().setPacketHandled(true);
+        }
+    }
+
+    /**
+     * プレイヤーのマナをクライアントに同期するパケット (Server → Client)
+     */
+    public static class SyncManaPacket {
+        private final float mana;
+        private final float maxMana;
+
+        public SyncManaPacket(float mana, float maxMana) {
+            this.mana = mana;
+            this.maxMana = maxMana;
+        }
+
+        public static void encode(SyncManaPacket msg, FriendlyByteBuf buf) {
+            buf.writeFloat(msg.mana);
+            buf.writeFloat(msg.maxMana);
+        }
+
+        public static SyncManaPacket decode(FriendlyByteBuf buf) {
+            return new SyncManaPacket(buf.readFloat(), buf.readFloat());
+        }
+
+        public static void handle(SyncManaPacket msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+                com.delphy.legendmagic.client.ClientManaData.set(msg.mana, msg.maxMana);
+            });
+            ctx.get().setPacketHandled(true);
+        }
+    }
+
+    /**
+     * ラジアルメニュー等から選択スロットインデックスを変更するパケット (Client → Server)
+     */
+    public static class SelectSpellIndexPacket {
+        private final int index;
+
+        public SelectSpellIndexPacket(int index) {
+            this.index = index;
+        }
+
+        public static void encode(SelectSpellIndexPacket msg, FriendlyByteBuf buf) {
+            buf.writeInt(msg.index);
+        }
+
+        public static SelectSpellIndexPacket decode(FriendlyByteBuf buf) {
+            return new SelectSpellIndexPacket(buf.readInt());
+        }
+
+        public static void handle(SelectSpellIndexPacket msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+                ServerPlayer player = ctx.get().getSender();
+                if (player != null) {
+                    player.getPersistentData().putInt(SpellManager.TAG_SELECTED_INDEX, msg.index);
                 }
             });
             ctx.get().setPacketHandled(true);

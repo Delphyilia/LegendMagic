@@ -2,19 +2,66 @@ package com.delphy.legendmagic.event;
 
 import com.delphy.legendmagic.LegendMagic;
 import com.delphy.legendmagic.item.LegendMagicItems;
+import com.delphy.legendmagic.magic.ManaManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = LegendMagic.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ModEvents {
+
+    @SubscribeEvent
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && event.side.isServer()) {
+            if (event.player instanceof ServerPlayer serverPlayer) {
+                // マナの毎秒自動回復（毎秒5マナ）およびクライアント定期同期
+                ManaManager.tickServer(serverPlayer);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            ManaManager.syncToClient(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            ManaManager.syncToClient(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingHurtEvent event) {
+        // プレイヤー被弾時の詠唱中断判定 (クライアント側で検知してキャンセル)
+        if (event.getEntity().level().isClientSide() && event.getEntity() instanceof Player player) {
+            if (com.delphy.legendmagic.magic.CastingManager.isCasting()) {
+                double kbRes = player.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+                // ノックバック耐性に応じた中断確率 (耐性1.0なら完全無効)
+                if (player.getRandom().nextDouble() > kbRes) {
+                    com.delphy.legendmagic.magic.CastingManager.cancel();
+                    player.displayClientMessage(Component.literal("§c被弾により詠唱が中断された！"), true);
+                    player.playSound(SoundEvents.SHIELD_BREAK, 1.0F, 1.2F);
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {

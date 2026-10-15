@@ -29,18 +29,26 @@ public class ClientTickHandler {
 
         // ===== 魔法発動キー =====
         if (ModKeyBindings.CAST_MAGIC_KEY.consumeClick()) {
-            if (!EyeUtil.hasAlphaStigma(mc.player)) return;
-
             Spell currentSpell = SpellManager.getSelectedSpell(mc.player);
             if (currentSpell != null) {
                 CastingManager.startCasting(currentSpell);
             }
         }
 
+        // ===== ラジアルメニュー（Rキー長押し） =====
+        if (ModKeyBindings.RADIAL_MENU_KEY.isDown() && mc.screen == null) {
+            mc.setScreen(new com.delphy.legendmagic.client.gui.RadialMenuScreen());
+        }
+
+        // 詠唱中の移動速度50%制限
+        if (CastingManager.isCasting()) {
+            mc.player.setDeltaMovement(mc.player.getDeltaMovement().multiply(0.5D, 1.0D, 0.5D));
+        }
+
         // 毎tickで詠唱マネージャーを更新
         CastingManager.tick();
 
-        // ===== 魔法切替キー =====
+        // ===== 魔法切替キー (Mキーでも順送り可能) =====
         if (ModKeyBindings.MAGIC_SWITCH_KEY.consumeClick()) {
             SpellManager.cycleSelectedSpell(mc.player);
 

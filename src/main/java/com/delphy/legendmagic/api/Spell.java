@@ -29,6 +29,17 @@ public interface Spell {
     // デフォルトで2秒 (20tick = 1s)
     default int getCastTime() { return 40; }
 
+    /**
+     * 魔法の消費マナ
+     * デフォルトで 20 マナ
+     */
+    default int getManaCost() { return 20; }
+
+    /**
+     * 所属する国家魔法体系
+     */
+    default MagicSystem getMagicSystem() { return MagicSystem.ROLAND; }
+
     // 魔法の実行(本体)
     void execute(LivingEntity caster);
 

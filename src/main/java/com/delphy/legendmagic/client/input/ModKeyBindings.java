@@ -11,9 +11,9 @@ public class ModKeyBindings {
 
     public static final String CATEGORY = "key.categories.legendmagic";
 
-    // static final で即座に new するのをやめる
     public static KeyMapping CAST_MAGIC_KEY;
     public static KeyMapping MAGIC_SWITCH_KEY;
+    public static KeyMapping RADIAL_MENU_KEY;
 
     // クライアント側でのみ呼ばれる初期化・登録メソッド
     public static void init(RegisterKeyMappingsEvent event) {
@@ -27,8 +27,14 @@ public class ModKeyBindings {
                 GLFW.GLFW_KEY_M,
                 CATEGORY
         );
+        RADIAL_MENU_KEY = new KeyMapping(
+                "key.legendmagic.radial_menu",
+                GLFW.GLFW_KEY_R,
+                CATEGORY
+        );
 
         event.register(CAST_MAGIC_KEY);
         event.register(MAGIC_SWITCH_KEY);
+        event.register(RADIAL_MENU_KEY);
     }
 }
