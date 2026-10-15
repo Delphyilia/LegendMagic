@@ -35,10 +35,8 @@ public class RingofThunderBeastsItem extends Item {
                 if (wolf != null) {
                     BlockPos spawnPos = player.blockPosition().offset(level.random.nextInt(3) - 1, 0, level.random.nextInt(3) - 1);
                     wolf.moveTo(spawnPos, 0.0F, 0.0F);
-                    // プレイヤーになつかせる
-                    wolf.tame(player);
-                    // 座らせないでおく
-                    wolf.setOrderedToSit(false);
+                    // 召喚者に基づきステータスを動的スケーリング・なつかせ
+                    wolf.setSummoner(player);
                     serverLevel.addFreshEntity(wolf);
                 }
             }

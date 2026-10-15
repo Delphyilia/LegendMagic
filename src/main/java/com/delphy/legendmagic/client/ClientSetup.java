@@ -5,6 +5,8 @@ import com.delphy.legendmagic.entity.ModEntities;
 import com.delphy.legendmagic.client.renderer.RolandSoldierRenderer;
 import com.delphy.legendmagic.client.renderer.DarkWolfRenderer;
 
+import com.delphy.legendmagic.client.renderer.ThunderWolfRenderer;
+
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,7 +32,9 @@ public class ClientSetup {
                 ModEntities.DARK_WOLF.get(),
                 DarkWolfRenderer::new
         );
-
-
+        EntityRenderers.register(
+                ModEntities.THUNDER_WOLF.get(),
+                ThunderWolfRenderer::new
+        );
     }
 }

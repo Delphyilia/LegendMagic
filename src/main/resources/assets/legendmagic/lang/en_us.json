@@ -1,8 +1,15 @@
 {
-  "item.legendmagic.alpha_stigma": "alpha_stigma",
-  "item.legendmagic.dango": "dango",
-  "item.legendmagic.dango_dough": "dango_tough",
-  "item.legendmagic.dango_seal": "dango_seal",
-  "item.legendmagic.long_sword": "long_sword",
-  "item.legendmagic.god_dango_sword": "dango_god's_sword"
+  "item.legendmagic.alpha_stigma": "Alpha Stigma",
+  "item.legendmagic.dango": "Dango",
+  "item.legendmagic.dango_dough": "Dango Dough",
+  "item.legendmagic.dango_seal": "Dango Seal",
+  "item.legendmagic.long_sword": "Long Sword",
+  "item.legendmagic.god_dango_sword": "God Dango Sword",
+  "item.legendmagic.grimoire": "Grimoire",
+  "item.legendmagic.ring_of_the_dark_emperor": "Ring of the Dark Emperor",
+  "item.legendmagic.ring_of_thunder_beasts": "Ring of Thunder Beasts",
+  "item.legendmagic.roland_soldier_spawn_egg": "Roland Soldier Spawn Egg",
+  "entity.legendmagic.thunder_wolf": "Thunder Wolf",
+  "entity.legendmagic.dark_wolf": "Dark Wolf",
+  "entity.legendmagic.roland_soldier": "Roland Soldier"
 }
