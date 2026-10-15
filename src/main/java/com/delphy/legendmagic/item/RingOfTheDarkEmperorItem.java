@@ -8,15 +8,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
-public class RingOfTheDarkEmperorItem extends Item {
+public class RingOfTheDarkEmperorItem extends RelicItem {
 
     public RingOfTheDarkEmperorItem(Properties properties) {
         super(properties);
@@ -28,9 +23,12 @@ public class RingOfTheDarkEmperorItem extends Item {
 
         if (!level.isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) level;
-            
-            // 2体の黒オオカミを召喚
-            for (int i = 0; i < 2; i++) {
+            int relicLevel = getRelicLevel(itemStack);
+            int summonCount = getSummonCount(relicLevel);
+            int cooldownTicks = getCooldownTicks(relicLevel);
+
+            // 強化段階に応じた数の黒オオカミを召喚
+            for (int i = 0; i < summonCount; i++) {
                 DarkWolfEntity wolf = ModEntities.DARK_WOLF.get().create(serverLevel);
                 if (wolf != null) {
                     BlockPos spawnPos = player.blockPosition().offset(level.random.nextInt(3) - 1, 0, level.random.nextInt(3) - 1);
@@ -40,21 +38,13 @@ public class RingOfTheDarkEmperorItem extends Item {
                     serverLevel.addFreshEntity(wolf);
                 }
             }
-            
-            // 10分間（12000 ticks）のクールダウンを設定
-            player.getCooldowns().addCooldown(this, 12000);
-            
+
+            // 強化段階に応じたクールダウンを設定
+            player.getCooldowns().addCooldown(this, cooldownTicks);
+
             player.displayClientMessage(Component.literal("闇よ、有れ。"), true);
         }
 
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        tooltipComponents.add(Component.literal("§7右クリックで黒オオカミを2体召喚する。"));
-        tooltipComponents.add(Component.literal("§7召喚されたオオカミは5分間共に戦う。"));
-        tooltipComponents.add(Component.literal("§cクールダウン: 10分"));
     }
 }

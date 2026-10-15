@@ -76,6 +76,14 @@ public class LegendMagicItems {
     public static final RegistryObject<Item> RING_OF_THUNDER_BEASTS = ITEMS.register("ring_of_thunder_beasts",
             () -> new RingofThunderBeastsItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
+    // 遺物の欠片（忘却欠片の進化素材）
+    public static final RegistryObject<Item> RELIC_SHARD = ITEMS.register("relic_shard",
+            () -> new Item(new Item.Properties().stacksTo(64).rarity(Rarity.RARE)));
+
+    // 殲滅眼（イーノ・ドゥーエ）
+    public static final RegistryObject<Item> IINO_DOUE = ITEMS.register("iino_doue",
+            () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+
     // アイテムを登録
     // LegendMagic.javaで呼び出すことで全アイテムが登録される
     public static void register(IEventBus eventBus) {

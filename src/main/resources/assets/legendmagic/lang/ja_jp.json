@@ -21,5 +21,8 @@
   "spell.legendmagic.spirit_beast": "我・契約文を捧げ・大地に眠る悪意の精獣を宿す",
   "spell.legendmagic.light_spirit_beast": "我・契約文を捧げ・大気に眠る光の精獣を宿す",
   "spell.legendmagic.sky_dancing_beast": "我・契約文を捧げ・天空を踊る光の魔獣を放つ",
-  "spell.legendmagic.vortex_of_spirits": "我・契約文を捧げ・宙を覆う精霊の力を放つ"
+  "spell.legendmagic.vortex_of_spirits": "我・契約文を捧げ・宙を覆う精霊の力を放つ",
+  "item.legendmagic.relic_shard": "遺物の欠片",
+  "block.legendmagic.relic_altar": "遺物の台座",
+  "block.legendmagic.offering_pedestal": "供物の台座"
 }

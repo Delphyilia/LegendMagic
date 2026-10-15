@@ -21,5 +21,8 @@
   "spell.legendmagic.spirit_beast": "Spirit Beast",
   "spell.legendmagic.light_spirit_beast": "Light Spirit Beast",
   "spell.legendmagic.sky_dancing_beast": "Sky Dancing Beast",
-  "spell.legendmagic.vortex_of_spirits": "Vortex of Spirits"
+  "spell.legendmagic.vortex_of_spirits": "Vortex of Spirits",
+  "item.legendmagic.relic_shard": "Relic Shard",
+  "block.legendmagic.relic_altar": "Relic Altar",
+  "block.legendmagic.offering_pedestal": "Offering Pedestal"
 }

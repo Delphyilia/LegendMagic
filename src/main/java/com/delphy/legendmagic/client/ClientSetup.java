@@ -36,5 +36,15 @@ public class ClientSetup {
                 ModEntities.THUNDER_WOLF.get(),
                 ThunderWolfRenderer::new
         );
+
+        // ⭐ ブロックエンティティレンダラー登録（浮遊アイテム描画）
+        net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(
+                com.delphy.legendmagic.block.entity.ModBlockEntities.RELIC_ALTAR_BE.get(),
+                com.delphy.legendmagic.client.renderer.RelicAltarRenderer::new
+        );
+        net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(
+                com.delphy.legendmagic.block.entity.ModBlockEntities.OFFERING_PEDESTAL_BE.get(),
+                com.delphy.legendmagic.client.renderer.OfferingPedestalRenderer::new
+        );
     }
 }

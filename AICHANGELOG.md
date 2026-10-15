@@ -1,5 +1,22 @@
 # AI 変更履歴 (AICHANGELOG.md)
 
+## [2026-10-15] Phase 5: 忘却欠片（指輪2種）とマルチブロック進化祭壇の実装完了
+
+### 変更概要
+- 忘却欠片（古代の超常遺物 / Relics）の基底クラス `RelicItem` を作成し、強化段階（Level 0〜3）による召喚数（2→3→4→5体）およびクールタイム（10分→8分→6分→4分）のスケーリング処理を実装。
+- `RingofThunderBeastsItem`（雷獣の指輪）および `RingOfTheDarkEmperorItem`（黒叡の指輪）を `RelicItem` 継承に更新し、ツールチップやアイテム名に強化段階（+I, +II, +III）を表示。
+- 希少古代素材「遺物の欠片（`relic_shard`）」および「殲滅眼（`iino_doue`）」のアイテム・モデル・テクスチャ・クラフトレシピ（十字配置・クモの目＋エンダーアイ）を実装。Curiosタグ `magic_eye` に登録。
+- 「魔導書（`grimoire`）」の不定形クラフトレシピ（本＋クモの目）を追加。
+- マルチブロック進化祭壇を実装：
+  - 中央ブロック: 「遺物の台座（`relic_altar` / `RelicAltarBlock` & `RelicAltarBlockEntity`）」
+  - 周囲ブロック: 「供物の台座（`offering_pedestal` / `OfferingPedestalBlock` & `OfferingPedestalBlockEntity`）」
+  - 中央から東西南北（2m離れた位置）に4つの供物台座を配置し、遺物の欠片を捧げて中央台座を右クリックすることで儀式が発動。
+  - 各供物台座から中央へ向けて光の粒子が収束するアニメーション演出とともに、忘却欠片が次の強化段階へ進化。
+  - クライアント描画: `RelicAltarRenderer` および `OfferingPedestalRenderer` により、台座の上にアイテムがふわふわと浮遊・ゆっくり回転する立体描画を実装。
+- `.\gradlew.bat compileJava` によるコンパイル検証に成功（Exit code 0）。
+
+---
+
 ## [2026-10-15] Phase 4: 3大国家魔法体系（全9魔法）の実装完了とレジストリ登録
 
 ### 変更概要

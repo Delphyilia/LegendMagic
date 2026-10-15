@@ -1,5 +1,7 @@
 package com.delphy.legendmagic;
 
+import com.delphy.legendmagic.block.ModBlocks;
+import com.delphy.legendmagic.block.entity.ModBlockEntities;
 import com.delphy.legendmagic.client.input.ModKeyBindings;
 import com.delphy.legendmagic.creativetab.ModCreativeTabs;
 import com.delphy.legendmagic.entity.ModEntities;
@@ -30,6 +32,8 @@ public class LegendMagic {
 
         ModNetwork.register();
 
+        ModBlocks.register(bus);
+        ModBlockEntities.register(bus);
         LegendMagicItems.register(bus);
         ModCreativeTabs.CREATIVE_TABS.register(bus);
         ModEntities.ENTITIES.register(bus);

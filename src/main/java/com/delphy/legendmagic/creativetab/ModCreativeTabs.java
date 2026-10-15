@@ -31,6 +31,10 @@ public class ModCreativeTabs {
                                 output.accept(LegendMagicItems.GRIMOIRE.get());
                                 output.accept(LegendMagicItems.RING_OF_THE_DARK_EMPEROR.get());
                                 output.accept(LegendMagicItems.RING_OF_THUNDER_BEASTS.get());
+                                output.accept(LegendMagicItems.RELIC_SHARD.get());
+                                output.accept(LegendMagicItems.IINO_DOUE.get());
+                                output.accept(com.delphy.legendmagic.block.ModBlocks.RELIC_ALTAR.get());
+                                output.accept(com.delphy.legendmagic.block.ModBlocks.OFFERING_PEDESTAL.get());
                             })
                             .build()
             );

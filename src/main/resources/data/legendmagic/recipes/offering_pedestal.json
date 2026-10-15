@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " P ",
+    " O ",
+    "OOO"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:polished_deepslate"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result": {
+    "item": "legendmagic:offering_pedestal",
+    "count": 2
+  }
+}
