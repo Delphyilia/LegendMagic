@@ -40,20 +40,27 @@ public class SpellDataSyncHandler {
                 // 3. すでに習得済みかチェックし、未習得なら魔導書に追加
                 if (!SpellManager.hasLearned(player, spell)) {
                     SpellManager.learnSpell(player, spell);
-                    player.sendSystemMessage(Component.literal("§c[複写眼] §f魔法を解析しました: " + spell.getName()));
+                    player.sendSystemMessage(Component.literal("§c【複写眼】§f魔法式を解析・習得した: §e" + spell.getName() + " §7(" + spell.getChant() + ")"));
+
+                    if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                        serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.ENCHANT,
+                                player.getX(), player.getY() + 1.5D, player.getZ(), 30, 0.4D, 0.4D, 0.4D, 0.1D);
+                        serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
+                                net.minecraft.sounds.SoundEvents.PLAYER_LEVELUP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.8F);
+                    }
                 }
             }
         }
     }
 
     /**
-     * プレイヤーが対象を「見ている」かを判定する（視野角 約60度）
+     * プレイヤーが対象を「見ている」かを判定する（視野角 約70度）
      */
     private static boolean isLookingAt(ServerPlayer player, net.minecraft.world.entity.Entity target) {
         Vec3 lookVec = player.getLookAngle().normalize();
         Vec3 relVec = target.position().subtract(player.position()).normalize();
         double dot = lookVec.dot(relVec);
-        return dot > 0.85; // 0.85 = 約60度の視野
+        return dot > 0.65; // 視野角
     }
 
     @SubscribeEvent
@@ -101,7 +108,9 @@ public class SpellDataSyncHandler {
         String[] tagsToCopy = {
                 SpellManager.TAG_LEARNED,
                 SpellManager.TAG_EQUIPPED,
-                SpellManager.TAG_SELECTED_INDEX
+                SpellManager.TAG_SELECTED_INDEX,
+                "LegendMagic_ReceivedGrimoire",
+                com.delphy.legendmagic.util.EyeUtil.TAG_IINO_DOUE_POOL
         };
 
         for (String tag : tagsToCopy) {

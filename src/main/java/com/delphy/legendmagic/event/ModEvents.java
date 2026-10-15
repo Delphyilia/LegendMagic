@@ -29,6 +29,13 @@ public class ModEvents {
             if (event.player instanceof ServerPlayer serverPlayer) {
                 // マナの毎秒自動回復（毎秒5マナ）およびクライアント定期同期
                 ManaManager.tickServer(serverPlayer);
+
+                // 殲滅眼（イーノ・ドゥーエ）の常時パッシブ付与
+                if (com.delphy.legendmagic.util.EyeUtil.hasIinoDoue(serverPlayer)) {
+                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 40, 0, false, false, false));
+                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.JUMP, 40, 0, false, false, false));
+                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 40, 0, false, false, false));
+                }
             }
         }
     }
@@ -45,6 +52,17 @@ public class ModEvents {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             ManaManager.syncToClient(serverPlayer);
+
+            // 初回スポーン時の魔導書（Grimoire）自動配布
+            if (!serverPlayer.getPersistentData().getBoolean("LegendMagic_ReceivedGrimoire")) {
+                serverPlayer.getPersistentData().putBoolean("LegendMagic_ReceivedGrimoire", true);
+                ItemStack grimoire = new ItemStack(LegendMagicItems.GRIMOIRE.get());
+                if (!serverPlayer.addItem(grimoire)) {
+                    serverPlayer.drop(grimoire, false);
+                }
+                serverPlayer.displayClientMessage(
+                        Component.literal("§6[LegendMagic] 魔導書が授与されました。複写眼で敵魔導兵を観察し、魔法を解析・習得してください。"), false);
+            }
         }
     }
 
@@ -57,7 +75,46 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
-        // プレイヤー被弾時の詠唱中断判定 (クライアント側で検知してキャンセル)
+        // 1. 殲滅眼（イーノ・ドゥーエ）の魔法吸収＆ダメージ蓄積・落下ダメージ半減
+        if (event.getEntity() instanceof ServerPlayer player && com.delphy.legendmagic.util.EyeUtil.hasIinoDoue(player)) {
+            // 落下ダメージ半減
+            if (event.getSource().is(net.minecraft.tags.DamageTypeTags.IS_FALL)) {
+                event.setAmount(event.getAmount() * 0.5F);
+                return;
+            }
+
+            // 倒地（ちがしら）は地脈物理攻撃のため吸収不可（貫通）
+            boolean isChigashira = "chigashira".equals(event.getSource().getMsgId());
+
+            // 魔法属性ダメージの吸収
+            boolean isMagic = !isChigashira && (
+                    event.getSource().is(net.minecraft.world.damagesource.DamageTypes.MAGIC)
+                    || event.getSource().is(net.minecraft.world.damagesource.DamageTypes.INDIRECT_MAGIC)
+                    || event.getSource().is(net.minecraft.tags.DamageTypeTags.WITCH_RESISTANT_TO)
+                    || "magic".equals(event.getSource().getMsgId())
+                    || "indirectMagic".equals(event.getSource().getMsgId())
+            );
+
+            if (isMagic) {
+                float absorbedDamage = event.getAmount();
+                event.setCanceled(true); // 被ダメージを完全無効化
+                com.delphy.legendmagic.util.EyeUtil.addIinoDouePool(player, absorbedDamage);
+
+                // 魔法を喰らう演出
+                net.minecraft.server.level.ServerLevel serverLevel = player.serverLevel();
+                serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.SCULK_SOUL,
+                        player.getX(), player.getY() + 1.0D, player.getZ(), 8, 0.3D, 0.4D, 0.3D, 0.05D);
+                serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.WARDEN_HEARTBEAT, SoundSource.PLAYERS, 1.2F, 1.5F);
+
+                float currentPool = com.delphy.legendmagic.util.EyeUtil.getIinoDouePool(player);
+                player.displayClientMessage(
+                        Component.literal(String.format("§4【殲滅眼】魔法を喰らった: +%.1f (蓄積: %.1f)", absorbedDamage, currentPool)), true);
+                return;
+            }
+        }
+
+        // 2. プレイヤー被弾時の詠唱中断判定 (クライアント側で検知してキャンセル)
         if (event.getEntity().level().isClientSide() && event.getEntity() instanceof Player player) {
             if (com.delphy.legendmagic.magic.CastingManager.isCasting()) {
                 double kbRes = player.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);

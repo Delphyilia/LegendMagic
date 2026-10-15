@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -127,6 +128,53 @@ public class ModNetwork {
                 ServerPlayer player = ctx.get().getSender();
                 if (player == null) return;
 
+                // 1. 殲滅眼（イーノ・ドゥーエ）チェック: 魔法使用不可＆アクティブ能動覚醒
+                if (com.delphy.legendmagic.util.EyeUtil.hasIinoDoue(player)) {
+                    if (!msg.isStart) {
+                        float storedDamage = com.delphy.legendmagic.util.EyeUtil.consumeIinoDouePool(player);
+                        if (storedDamage <= 0.0F) {
+                            player.displayClientMessage(net.minecraft.network.chat.Component.literal("§c【殲滅眼】喰らった魔法の力が足りない……（敵の魔法を吸収してください）"), true);
+                            player.serverLevel().playSound(null, player.getX(), player.getY(), player.getZ(),
+                                    net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
+                            return;
+                        }
+
+                        // 蓄積10ダメージごとに +5秒 (100 ticks)、最大60秒 (1200 ticks)
+                        int durationTicks = Math.min(1200, Math.max(100, (int) ((storedDamage / 10.0F) * 100)));
+                        int durationSec = durationTicks / 20;
+
+                        // 能動覚醒発動！
+                        player.displayClientMessage(net.minecraft.network.chat.Component.literal("§4「力を喰らい……それを放つ」"), true);
+
+                        // バフ付与（吸収、攻撃力、速度、耐性）
+                        int absorptionAmp = storedDamage >= 40.0F ? 3 : (storedDamage >= 20.0F ? 2 : 1);
+                        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.ABSORPTION, durationTicks, absorptionAmp, false, true, true));
+                        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.DAMAGE_BOOST, durationTicks, 1, false, true, true)); // Strength II
+                        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED, durationTicks, 1, false, true, true)); // Speed II
+                        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, durationTicks, 1, false, true, true)); // Resistance II
+
+                        // 覚醒演出
+                        ServerLevel sLevel = player.serverLevel();
+                        sLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.SOUL_FIRE_FLAME,
+                                player.getX(), player.getY() + 1.0D, player.getZ(), 50, 0.8D, 0.8D, 0.8D, 0.15D);
+                        sLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.FLASH,
+                                player.getX(), player.getY() + 1.0D, player.getZ(), 2, 0, 0, 0, 0);
+                        sLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
+                                net.minecraft.sounds.SoundEvents.WITHER_SPAWN, net.minecraft.sounds.SoundSource.PLAYERS, 1.2F, 1.6F);
+                        sLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
+                                net.minecraft.sounds.SoundEvents.WARDEN_ROAR, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.3F);
+
+                        player.sendSystemMessage(net.minecraft.network.chat.Component.literal(
+                                String.format("§6【殲滅眼覚醒】蓄積 %.1f ダメージを解放！ %d秒間、暴虐の力を獲得！", storedDamage, durationSec)));
+                    }
+                    return;
+                }
+
+                // 2. 通常の魔法処理
                 Spell spell = SpellRegistry.REGISTRY.get().getValue(msg.spellId);
                 if (spell != null) {
                     if (msg.isStart) {
@@ -138,6 +186,9 @@ public class ModNetwork {
                     } else {
                         if (com.delphy.legendmagic.magic.ManaManager.consumeMana(player, spell.getManaCost())) {
                             spell.execute(player);
+
+                            // 3. 複写眼（アルファ・スティグマ）による他者魔法のコピー・解析習得処理
+                            checkAndLearnFromSight(player, spell);
                         } else {
                             player.displayClientMessage(net.minecraft.network.chat.Component.literal("§cマナが足りません！"), true);
                         }
@@ -145,6 +196,33 @@ public class ModNetwork {
                 }
             });
             ctx.get().setPacketHandled(true);
+        }
+
+        /**
+         * 術者が放った魔法を、視界内にいる複写眼保持者が解析・即時習得する
+         */
+        public static void checkAndLearnFromSight(net.minecraft.world.entity.LivingEntity caster, Spell spell) {
+            if (!(caster.level() instanceof ServerLevel level)) return;
+
+            double radius = 32.0D;
+            net.minecraft.world.phys.AABB lookBox = caster.getBoundingBox().inflate(radius);
+            java.util.List<ServerPlayer> nearbyPlayers = level.getEntitiesOfClass(ServerPlayer.class, lookBox,
+                    p -> p != caster && com.delphy.legendmagic.util.EyeUtil.hasAlphaStigma(p));
+
+            for (ServerPlayer observer : nearbyPlayers) {
+                if (!com.delphy.legendmagic.magic.SpellManager.hasLearned(observer, spell)) {
+                    if (observer.hasLineOfSight(caster)) {
+                        com.delphy.legendmagic.magic.SpellManager.learnSpell(observer, spell);
+
+                        observer.displayClientMessage(
+                                net.minecraft.network.chat.Component.literal("§c【複写眼】魔法式を解析・習得した: §e" + spell.getName() + " §7(" + spell.getChant() + ")"), false);
+                        level.sendParticles(net.minecraft.core.particles.ParticleTypes.ENCHANT,
+                                observer.getX(), observer.getY() + 1.5D, observer.getZ(), 25, 0.4D, 0.4D, 0.4D, 0.1D);
+                        level.playSound(null, observer.getX(), observer.getY(), observer.getZ(),
+                                net.minecraft.sounds.SoundEvents.PLAYER_LEVELUP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.8F);
+                    }
+                }
+            }
         }
     }
 
