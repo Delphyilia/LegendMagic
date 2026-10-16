@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "legendmagic:gastark_fortress",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 10,
+    "salt": 48291047
+  }
+}

@@ -89,3 +89,11 @@
 - [x] 各国構造物スポーン定義（ルーナ神殿、エスタブール研究所、メノリス大陸ガスターク兵）の更新とモデル・テクスチャ・言語ファイル整備
 - [x] コンパイル検証（compileJava）とjarビルド確認
 
+## Phase 11: ガスターク帝国の専用構造物「ガスターク軍の砦」の実装
+- [x] チェストルートテーブル `chests/gastark_fortress.json`（遺物の欠片、雷獣/黒叡の指輪、鉱石資材）の定義
+- [x] 構造物テンプレートプール `worldgen/template_pool/gastark_fortress/start_pool.json` の作成
+- [x] 構造物定義 `worldgen/structure/gastark_fortress.json`（ガスターク兵スポーン保証、オーバーワールド＆メノリス大陸共通タグ対応）の作成
+- [x] 構造物セット `worldgen/structure_set/gastark_fortress.json` の作成
+- [x] 仕様書の更新（`for_agent/04_relics_and_crafting.md` 等）
+- [x] コンパイル検証（compileJava）と完全jarビルドの確認
+

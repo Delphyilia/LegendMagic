@@ -1,5 +1,22 @@
 # AI 変更履歴 (AICHANGELOG.md)
 
+## [2026-10-16] Phase 11: ガスターク軍の砦（Gastark Fortress）構造物とチェストルートの実装完了
+
+### 変更概要
+- **ガスターク帝国の専用構造物「ガスターク軍の砦（gastark_fortress）」の実装**:
+  - 共有バイオームタグ `#legendmagic:has_country_structures` に適用し、**オーバーワールドと新ディメンション「メノリス大陸」の双方で自然生成**されるように設定。
+  - 要塞内部には遺物所持エリート兵「ガスターク兵（`GastarkSoldierEntity`）」が 3〜6 体固定スポーン（`spawn_overrides`）。
+- **ガスターク軍チェストルートテーブル（`chests/gastark_fortress.json`）**:
+  - 忘却欠片の進化素材「遺物の欠片（Relic Shard）」を複数個高確率（35%）で配置。
+  - 忘却欠片本体「雷獣の指輪」「黒叡の指輪」をそれぞれチェストから一定確率（各4%）で直接獲得可能。
+  - その他、軍事物資としてダイヤモンド、金インゴット、鉄インゴット、ラピスラズリ、金リンゴ等が出現。
+- **仕様書（`for_agent/04_relics_and_crafting.md`）の同期**:
+  - ガスターク砦の生成とチェストルート、遺物獲得の攻略導線を追記改訂。
+- **検証（Ground Truth）**:
+  - `.\gradlew.bat compileJava` および `.\gradlew.bat jar` の完全ビルド成功を確認（Exit code 0）。
+
+---
+
 ## [2026-10-16] Voidダメージ耐性・奈落落下復帰救済およびガスターク兵ドロップ率Configの実装
 
 ### 変更概要
