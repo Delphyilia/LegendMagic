@@ -38,6 +38,7 @@ public class ModCreativeTabs {
                                 output.accept(LegendMagicItems.INNER_KNIFE.get());
                                 output.accept(LegendMagicItems.CORE_OF_FATE.get());
                                 output.accept(com.delphy.legendmagic.block.ModBlocks.ALTAR_OF_FATE.get());
+                                output.accept(LegendMagicItems.MENORIS_COMPASS.get());
                             })
                             .build()
             );

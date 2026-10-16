@@ -92,6 +92,10 @@ public class LegendMagicItems {
     public static final RegistryObject<Item> CORE_OF_FATE = ITEMS.register("core_of_fate",
             () -> new CoreOfFateItem(new Item.Properties()));
 
+    // メノリスの羅針盤（新ディメンション「メノリス大陸」転移アイテム）
+    public static final RegistryObject<Item> MENORIS_COMPASS = ITEMS.register("menoris_compass",
+            () -> new MenorisCompassItem(new Item.Properties()));
+
     // アイテムを登録
     // LegendMagic.javaで呼び出すことで全アイテムが登録される
     public static void register(IEventBus eventBus) {

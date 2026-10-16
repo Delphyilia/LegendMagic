@@ -1,6 +1,6 @@
 {
   "type": "minecraft:jigsaw",
-  "biomes": "#minecraft:is_overworld",
+  "biomes": "#legendmagic:has_country_structures",
   "step": "surface_structures",
   "spawn_overrides": {
     "monster": {
