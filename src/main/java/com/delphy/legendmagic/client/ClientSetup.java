@@ -45,6 +45,18 @@ public class ClientSetup {
                 ModEntities.ROLAND_GUARD_CAPTAIN.get(),
                 RolandGuardCaptainRenderer::new
         );
+        EntityRenderers.register(
+                ModEntities.RUNA_PRIEST.get(),
+                com.delphy.legendmagic.client.renderer.RunaPriestRenderer::new
+        );
+        EntityRenderers.register(
+                ModEntities.ESTABUL_SOLDIER.get(),
+                com.delphy.legendmagic.client.renderer.EstabulSoldierRenderer::new
+        );
+        EntityRenderers.register(
+                ModEntities.GASTARK_SOLDIER.get(),
+                com.delphy.legendmagic.client.renderer.GastarkSoldierRenderer::new
+        );
 
         // ⭐ ブロックエンティティレンダラー登録（浮遊アイテム描画）
         net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(

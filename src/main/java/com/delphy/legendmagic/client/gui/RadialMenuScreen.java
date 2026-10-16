@@ -90,10 +90,10 @@ public class RadialMenuScreen extends Screen {
         List<Spell> equipped = SpellManager.getEquippedSpells(player);
         int currentSelected = SpellManager.getSelectedIndex(player);
 
-        // 3. 8つのスロットを円環状に描画
-        double radius = 80.0D;
-        int boxW = 54;
-        int boxH = 24;
+        // 3. 10個のスロットを円環状に描画
+        double radius = 95.0D;
+        int boxW = 50;
+        int boxH = 22;
 
         for (int s = 0; s < slotCount; s++) {
             double angle = (s * (Math.PI * 2.0D / slotCount)) - (Math.PI / 2.0D);

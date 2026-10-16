@@ -31,5 +31,8 @@
   "entity.legendmagic.roland_guard_captain": "Roland Guard Captain",
   "entity.legendmagic.destroyer_of_fate": "The Destroyer of Fate",
   "block.legendmagic.altar_of_fate": "Altar of Fate",
-  "item.legendmagic.menoris_compass": "Menoris Compass"
+  "item.legendmagic.menoris_compass": "Menoris Compass",
+  "entity.legendmagic.runa_priest": "Runa Priest",
+  "entity.legendmagic.estabul_soldier": "Estabul Mage",
+  "entity.legendmagic.gastark_soldier": "Gastark Soldier"
 }

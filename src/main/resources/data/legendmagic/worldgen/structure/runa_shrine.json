@@ -2,6 +2,19 @@
   "type": "minecraft:jigsaw",
   "biomes": "#legendmagic:has_country_structures",
   "step": "surface_structures",
+  "spawn_overrides": {
+    "creature": {
+      "bounding_box": "full",
+      "spawns": [
+        {
+          "type": "legendmagic:runa_priest",
+          "weight": 100,
+          "minCount": 2,
+          "maxCount": 4
+        }
+      ]
+    }
+  },
   "start_pool": "legendmagic:runa_shrine/start_pool",
   "size": 2,
   "start_height": {

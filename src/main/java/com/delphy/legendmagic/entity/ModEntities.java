@@ -63,6 +63,36 @@ public class ModEntities {
                             .build("roland_guard_captain")
             );
 
+    // ルーナ神官（友好Mob）
+    public static final RegistryObject<EntityType<RunaPriestEntity>> RUNA_PRIEST =
+            ENTITIES.register("runa_priest",
+                    () -> EntityType.Builder
+                            .of(RunaPriestEntity::new, MobCategory.CREATURE)
+                            .sized(0.6F, 1.95F)
+                            .clientTrackingRange(10)
+                            .build("runa_priest")
+            );
+
+    // エスタブール魔導兵（敵対Mob）
+    public static final RegistryObject<EntityType<EstabulSoldierEntity>> ESTABUL_SOLDIER =
+            ENTITIES.register("estabul_soldier",
+                    () -> EntityType.Builder
+                            .of(EstabulSoldierEntity::new, MobCategory.MONSTER)
+                            .sized(0.6F, 1.95F)
+                            .clientTrackingRange(10)
+                            .build("estabul_soldier")
+            );
+
+    // ガスターク兵（遺物所持エリート兵）
+    public static final RegistryObject<EntityType<GastarkSoldierEntity>> GASTARK_SOLDIER =
+            ENTITIES.register("gastark_soldier",
+                    () -> EntityType.Builder
+                            .of(GastarkSoldierEntity::new, MobCategory.MONSTER)
+                            .sized(0.65F, 2.0F)
+                            .clientTrackingRange(10)
+                            .build("gastark_soldier")
+            );
+
     public static void register(IEventBus bus) {
         ENTITIES.register(bus);
     }
@@ -75,6 +105,9 @@ public class ModEntities {
         event.put(THUNDER_WOLF.get(), ThunderWolfEntity.createAttributes().build());
         event.put(DESTROYER_OF_FATE.get(), DestroyerOfFateEntity.createAttributes().build());
         event.put(ROLAND_GUARD_CAPTAIN.get(), RolandGuardCaptainEntity.createAttributes().build());
+        event.put(RUNA_PRIEST.get(), RunaPriestEntity.createAttributes().build());
+        event.put(ESTABUL_SOLDIER.get(), EstabulSoldierEntity.createAttributes().build());
+        event.put(GASTARK_SOLDIER.get(), GastarkSoldierEntity.createAttributes().build());
     }
 
     // スポーンルール登録（夜間の地上スポーン）
@@ -89,6 +122,20 @@ public class ModEntities {
         );
         event.register(
                 ROLAND_GUARD_CAPTAIN.get(),
+                net.minecraft.world.entity.SpawnPlacements.Type.ON_GROUND,
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                net.minecraft.world.entity.monster.Monster::checkMonsterSpawnRules,
+                net.minecraftforge.event.entity.SpawnPlacementRegisterEvent.Operation.REPLACE
+        );
+        event.register(
+                ESTABUL_SOLDIER.get(),
+                net.minecraft.world.entity.SpawnPlacements.Type.ON_GROUND,
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                net.minecraft.world.entity.monster.Monster::checkMonsterSpawnRules,
+                net.minecraftforge.event.entity.SpawnPlacementRegisterEvent.Operation.REPLACE
+        );
+        event.register(
+                GASTARK_SOLDIER.get(),
                 net.minecraft.world.entity.SpawnPlacements.Type.ON_GROUND,
                 net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 net.minecraft.world.entity.monster.Monster::checkMonsterSpawnRules,

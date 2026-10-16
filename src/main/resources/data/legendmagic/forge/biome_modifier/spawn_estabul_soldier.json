@@ -1,0 +1,10 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": "#legendmagic:has_country_structures",
+  "spawners": {
+    "type": "legendmagic:estabul_soldier",
+    "weight": 25,
+    "minCount": 1,
+    "maxCount": 3
+  }
+}

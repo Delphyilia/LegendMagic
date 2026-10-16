@@ -31,5 +31,8 @@
   "entity.legendmagic.roland_guard_captain": "ローランド近衛隊長",
   "entity.legendmagic.destroyer_of_fate": "運命の破壊者",
   "block.legendmagic.altar_of_fate": "運命の祭壇",
-  "item.legendmagic.menoris_compass": "メノリスの羅針盤"
+  "item.legendmagic.menoris_compass": "メノリスの羅針盤",
+  "entity.legendmagic.runa_priest": "ルーナ神官",
+  "entity.legendmagic.estabul_soldier": "エスタブール魔導兵",
+  "entity.legendmagic.gastark_soldier": "ガスターク兵"
 }

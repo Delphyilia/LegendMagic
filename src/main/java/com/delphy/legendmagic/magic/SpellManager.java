@@ -23,8 +23,8 @@ public class SpellManager {
     public static final String TAG_LEARNED = "LegendMagic_Learned";
     public static final String TAG_SELECTED_INDEX = "LegendMagic_SelectedIdx";
 
-    /** 装備可能な魔法スロットの最大数（8スロット固定） */
-    public static final int MAX_SPELL_SLOTS = 8;
+    /** 装備可能な魔法スロットの最大数（10スロット） */
+    public static final int MAX_SPELL_SLOTS = 10;
 
     /**
      * 現在選択中の魔法を取得（プレイヤーごとのNBTから）
