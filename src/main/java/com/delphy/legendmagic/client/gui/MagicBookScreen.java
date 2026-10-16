@@ -52,12 +52,20 @@ public class MagicBookScreen extends Screen {
             }).bounds(bx, by, 80, 22).build());
         }
 
-        // 2. 習得済み魔法ボタン（中央列）
+        // 2. 習得済み魔法ボタン（中央列、ページネーション対応）
         List<Spell> learnedSpells = getLearnedSpells(player);
         int midX = this.width / 2 - 10;
-        for (int i = 0; i < learnedSpells.size() && i < 7; i++) {
+        int pageSize = 6;
+        int totalPages = Math.max(1, (int) Math.ceil((double) learnedSpells.size() / pageSize));
+        if (spellListPage >= totalPages) spellListPage = totalPages - 1;
+
+        int startIndex = spellListPage * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, learnedSpells.size());
+
+        for (int i = startIndex; i < endIndex; i++) {
             Spell spell = learnedSpells.get(i);
-            int by = topY + (i * 24);
+            int row = i - startIndex;
+            int by = topY + (row * 24);
 
             String displayName = spell.getName();
             if (displayName.length() > 8) {
@@ -66,7 +74,24 @@ public class MagicBookScreen extends Screen {
 
             this.addRenderableWidget(Button.builder(Component.literal(displayName), (btn) -> {
                 this.previewSpell = spell;
-            }).bounds(midX, by, 90, 20).build());
+            }).bounds(midX, by, 95, 20).build());
+        }
+
+        // ページ送りボタン
+        if (totalPages > 1) {
+            this.addRenderableWidget(Button.builder(Component.literal("<"), (btn) -> {
+                if (this.spellListPage > 0) {
+                    this.spellListPage--;
+                    this.rebuildWidgets();
+                }
+            }).bounds(midX, topY + (pageSize * 24) + 2, 25, 18).build());
+
+            this.addRenderableWidget(Button.builder(Component.literal(">"), (btn) -> {
+                if (this.spellListPage < totalPages - 1) {
+                    this.spellListPage++;
+                    this.rebuildWidgets();
+                }
+            }).bounds(midX + 70, topY + (pageSize * 24) + 2, 25, 18).build());
         }
 
         // 3. セットボタン＆解除ボタン（右側下部）
@@ -85,6 +110,8 @@ public class MagicBookScreen extends Screen {
             this.previewSpell = learnedSpells.get(0);
         }
     }
+
+    private int spellListPage = 0;
 
     private List<Spell> getLearnedSpells(Player player) {
         List<Spell> allSpells = new ArrayList<>(SpellRegistry.REGISTRY.get().getValues());

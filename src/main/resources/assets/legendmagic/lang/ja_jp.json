@@ -34,5 +34,11 @@
   "item.legendmagic.menoris_compass": "メノリスの羅針盤",
   "entity.legendmagic.runa_priest": "ルーナ神官",
   "entity.legendmagic.estabul_soldier": "エスタブール魔導兵",
-  "entity.legendmagic.gastark_soldier": "ガスターク兵"
+  "entity.legendmagic.gastark_soldier": "ガスターク兵",
+  "spell.legendmagic.kurenai": "求めるは焼原>>>紅蓮<くれない>",
+  "spell.legendmagic.misumi": "求めるは水雲>>>崩水<みすみ>",
+  "spell.legendmagic.fuen": "求めるは氷神>>>浮凍<フエン>",
+  "spell.legendmagic.bakushu": "求めるは光陣>>>縛呪<ばくしゅ>",
+  "spell.legendmagic.shira": "求めるは侵入>>>蝕走<しら>",
+  "spell.legendmagic.ante": "求めるは静寂>>>闇庭<あんて>"
 }

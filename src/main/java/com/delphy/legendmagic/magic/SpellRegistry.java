@@ -43,6 +43,12 @@ public class SpellRegistry {
         SPELLS.register("izuchi", Izuchi::new);
         SPELLS.register("chigashira", Chigashira::new);
         SPELLS.register("izuchi_death", com.delphy.legendmagic.magic.roland.IzuchiDeath::new);
+        SPELLS.register("kurenai", com.delphy.legendmagic.magic.roland.Kurenai::new);
+        SPELLS.register("misumi", com.delphy.legendmagic.magic.roland.Misumi::new);
+        SPELLS.register("fuen", com.delphy.legendmagic.magic.roland.Fuen::new);
+        SPELLS.register("bakushu", com.delphy.legendmagic.magic.roland.Bakushu::new);
+        SPELLS.register("shira", com.delphy.legendmagic.magic.roland.Shira::new);
+        SPELLS.register("ante", com.delphy.legendmagic.magic.roland.Ante::new);
 
         // ルーナ魔法体系
         SPELLS.register("sukuino_kazewo", SukuinoKazewo::new);

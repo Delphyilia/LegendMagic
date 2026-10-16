@@ -34,5 +34,11 @@
   "item.legendmagic.menoris_compass": "Menoris Compass",
   "entity.legendmagic.runa_priest": "Runa Priest",
   "entity.legendmagic.estabul_soldier": "Estabul Mage",
-  "entity.legendmagic.gastark_soldier": "Gastark Soldier"
+  "entity.legendmagic.gastark_soldier": "Gastark Soldier",
+  "spell.legendmagic.kurenai": "Kurenai",
+  "spell.legendmagic.misumi": "Misumi",
+  "spell.legendmagic.fuen": "Fuen",
+  "spell.legendmagic.bakushu": "Bakushu",
+  "spell.legendmagic.shira": "Shira",
+  "spell.legendmagic.ante": "Ante"
 }
