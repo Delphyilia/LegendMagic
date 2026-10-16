@@ -1,5 +1,21 @@
 # AI 変更履歴 (AICHANGELOG.md)
 
+## [2026-10-16] Voidダメージ耐性・奈落落下復帰救済およびガスターク兵ドロップ率Configの実装
+
+### 変更概要
+- **ボス「運命の破壊者（DestroyerOfFateEntity）」の耐性強化**:
+  - 他MOD（L2 Hostilityや特定武器・アドオン）の即死・貫通対策として、`DamageTypes.FELL_OUT_OF_WORLD` および `DamageTypeTags.BYPASSES_INVULNERABILITY` によるダメージを完全無効化。
+  - 戦闘中に床下や奈落（Y < 0）に落ちた場合、戦闘部屋の安全なプラットフォーム中央（`0.5, 33, 0.5`）へ即時テレポート復帰する救済ロジックを実装。
+- **ボス作成原則の策定（仕様書同期）**:
+  - `for_agent/05_endgame_and_boss.md` に「3.5 全ボス共通の必須設計原則（Void耐性＆奈落復帰ロジックの標準搭載）」を追加。今後作成する全ボスにこの耐性を義務付け。
+- **ガスターク兵ドロップ率のConfig化とデフォルト値調整**:
+  - `Config.java` に `GASTARK_RELIC_DROP_CHANCE`（デフォルト: 0.015 = 1.5%）および `GASTARK_RELIC_LOOTING_BONUS`（デフォルト: 0.005 = +0.5%/Lv）を新設。
+  - `GastarkSoldierEntity` のハードコードされていた10%ドロップを廃止し、Config連携によりMOD環境に応じた細やかなドロップ率調整を可能に。
+- **検証（Ground Truth）**:
+  - `compileJava` および `jar` ビルドの成功を確認（Exit code 0）。
+
+---
+
 ## [2026-10-16] Phase 10: 各国固有兵（友好ルーナ神官・エスタブール魔導兵）・遺物強兵ガスターク・魔導書10枠化の実装完了
 
 ### 変更概要

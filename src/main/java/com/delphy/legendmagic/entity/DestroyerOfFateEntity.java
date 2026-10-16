@@ -112,10 +112,22 @@ public class DestroyerOfFateEntity extends Monster {
                     this.getX(), this.getY() + 1.0D, this.getZ(),
                     3, 0.4D, 0.8D, 0.4D, 0.02D);
         }
+
+        // ⭐ 奈落（Void）落下防止＆復帰救済ロジック
+        if (!this.level().isClientSide && this.getY() < 0.0D) {
+            teleportToSafeCenter();
+        }
     }
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        // ⭐ Void（奈落・即死貫通）耐性：他MODのVoid属性や奈落ダメージによる即死を完全無効化
+        if (source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)
+                || source.is(net.minecraft.world.damagesource.DamageTypes.FELL_OUT_OF_WORLD)) {
+            teleportToSafeCenter();
+            return false;
+        }
+
         // 攻撃を受けた際に確率で残影テレポート発動（神速の身ごなし）
         if (!this.level().isClientSide && this.teleportCooldown <= 0 && this.random.nextFloat() < 0.35F) {
             teleportRandomly();
@@ -123,6 +135,19 @@ public class DestroyerOfFateEntity extends Monster {
         }
         return super.hurt(source, amount);
     }
+
+    /**
+     * 奈落落下時の中央安全プラットフォームへの復帰テレポート
+     */
+    private void teleportToSafeCenter() {
+        this.setDeltaMovement(0.0D, 0.0D, 0.0D);
+        this.teleportTo(0.5D, 33.0D, 0.5D);
+        this.playSound(net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT, 2.0F, 1.0F);
+        if (this.level() instanceof ServerLevel sLevel) {
+            sLevel.sendParticles(ParticleTypes.PORTAL, 0.5D, 33.0D, 0.5D, 60, 0.5D, 1.0D, 0.5D, 0.2D);
+        }
+    }
+
 
     /**
      * 残影テレポート

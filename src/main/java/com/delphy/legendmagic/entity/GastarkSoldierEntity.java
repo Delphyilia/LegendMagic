@@ -205,9 +205,12 @@ public class GastarkSoldierEntity extends Monster {
         int shardCount = 1 + this.random.nextInt(2 + looting);
         this.spawnAtLocation(new ItemStack(LegendMagicItems.RELIC_SHARD.get(), shardCount));
 
-        // 稀に所持している忘却欠片（指輪本体）をドロップ (通常10%, ルーティングで増加)
-        float dropChance = 0.10F + (looting * 0.05F);
-        if (this.random.nextFloat() < dropChance) {
+        // 稀に所持している忘却欠片（指輪本体）をドロップ (Config設定値: デフォルト1.5% + ルーティングごとに+0.5%)
+        double baseChance = com.delphy.legendmagic.Config.GASTARK_RELIC_DROP_CHANCE.get();
+        double lootingBonus = com.delphy.legendmagic.Config.GASTARK_RELIC_LOOTING_BONUS.get() * looting;
+        double totalChance = baseChance + lootingBonus;
+
+        if (this.random.nextDouble() < totalChance) {
             ItemStack relicStack = (this.getRelicType() == RELIC_THUNDER)
                     ? new ItemStack(LegendMagicItems.RING_OF_THUNDER_BEASTS.get())
                     : new ItemStack(LegendMagicItems.RING_OF_THE_DARK_EMPEROR.get());

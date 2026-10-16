@@ -14,6 +14,14 @@ public class Config {
             BUILDER.comment("Lightning spell cooldown (ticks)")
                     .defineInRange("lightningCooldown", 100, 0, 6000);
 
+    public static final ForgeConfigSpec.DoubleValue GASTARK_RELIC_DROP_CHANCE =
+            BUILDER.comment("Base drop chance of Relic Ring (Thunder / Dark) from Gastark Soldier (0.01 = 1%)")
+                    .defineInRange("gastarkRelicDropChance", 0.015D, 0.0D, 1.0D);
+
+    public static final ForgeConfigSpec.DoubleValue GASTARK_RELIC_LOOTING_BONUS =
+            BUILDER.comment("Additional drop chance per looting level (0.005 = +0.5% per level)")
+                    .defineInRange("gastarkRelicLootingBonus", 0.005D, 0.0D, 1.0D);
+
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
     @SubscribeEvent
