@@ -108,3 +108,15 @@
 - [x] 仕様書（`for_agent/02_magic_systems.md`）の更新
 - [x] コンパイル検証（compileJava）とjarビルド確認
 
+## Phase 13: デバッグプレイ用コマンド群（/legendmagic & /lm）と全Mobスポーンエッグの実装
+- [x] 全Mob・ボスのスポーンエッグ（全7種新規追加）の登録とクリエイティブタブ・言語ファイルへの追加
+- [x] コマンド `/legendmagic`（`/lm`）の実装
+  - [x] `learn all`: 上位魔法を含む全魔法の一括習得
+  - [x] `reset spells`: 習得状態および刻印スロットの初期化
+  - [x] `mana [amount]`: マナ全回復または指定値設定
+  - [x] `tp <roland|estabul|runa|gastark|lab|menoris>`: 各国構造物探索・ディメンションへの直接テレポート
+  - [x] `eggs`: 全Mob・ボスのスポーンエッグ一括入手
+  - [x] `kit test`: 忘却欠片・魔眼・遺物素材・キーアイテムのテストキット一式入手
+- [x] `RegisterCommandsEvent` でのコマンド登録
+- [x] コンパイル検証（compileJava）と完全jarビルドの確認
+

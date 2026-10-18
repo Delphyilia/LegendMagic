@@ -23,6 +23,13 @@ public class ModCreativeTabs {
                             .displayItems((parameters, output) -> {
                                 output.accept(LegendMagicItems.ALPHA_STIGMA.get());
                                 output.accept(LegendMagicItems.ROLAND_SOLDIER_SPAWN_EGG.get());
+                                output.accept(LegendMagicItems.ROLAND_GUARD_CAPTAIN_SPAWN_EGG.get());
+                                output.accept(LegendMagicItems.RUNA_PRIEST_SPAWN_EGG.get());
+                                output.accept(LegendMagicItems.ESTABUL_SOLDIER_SPAWN_EGG.get());
+                                output.accept(LegendMagicItems.GASTARK_SOLDIER_SPAWN_EGG.get());
+                                output.accept(LegendMagicItems.DESTROYER_OF_FATE_SPAWN_EGG.get());
+                                output.accept(LegendMagicItems.THUNDER_WOLF_SPAWN_EGG.get());
+                                output.accept(LegendMagicItems.DARK_WOLF_SPAWN_EGG.get());
                                 output.accept(LegendMagicItems.DANGO_DOUGH.get());
                                 output.accept(LegendMagicItems.DANGO.get());
                                 output.accept(LegendMagicItems.DANGO_SEAL.get());

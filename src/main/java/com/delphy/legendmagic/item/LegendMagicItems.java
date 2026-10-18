@@ -31,7 +31,84 @@ public class LegendMagicItems {
                     () -> new ForgeSpawnEggItem(
                             ModEntities.ROLAND_SOLDIER,
                             0x3A3A3A, // 背景の色
-                            0xAAAAAA, // ぶつぶつの色
+                            0xAAAAAA, // 斑点の色
+                            new Item.Properties()
+                    )
+            );
+
+    // ローランド近衛隊長のスポーンエッグ（中ボス）
+    public static final RegistryObject<Item> ROLAND_GUARD_CAPTAIN_SPAWN_EGG =
+            ITEMS.register("roland_guard_captain_spawn_egg",
+                    () -> new ForgeSpawnEggItem(
+                            ModEntities.ROLAND_GUARD_CAPTAIN,
+                            0x8B0000, // 深紅
+                            0xFFD700, // 金
+                            new Item.Properties()
+                    )
+            );
+
+    // ルーナ神官のスポーンエッグ（友好Mob）
+    public static final RegistryObject<Item> RUNA_PRIEST_SPAWN_EGG =
+            ITEMS.register("runa_priest_spawn_egg",
+                    () -> new ForgeSpawnEggItem(
+                            ModEntities.RUNA_PRIEST,
+                            0xE0EEE0, // 白緑
+                            0x00CED1, // エメラルドシアン
+                            new Item.Properties()
+                    )
+            );
+
+    // エスタブール魔導兵のスポーンエッグ
+    public static final RegistryObject<Item> ESTABUL_SOLDIER_SPAWN_EGG =
+            ITEMS.register("estabul_soldier_spawn_egg",
+                    () -> new ForgeSpawnEggItem(
+                            ModEntities.ESTABUL_SOLDIER,
+                            0x1A237E, // インディゴ
+                            0x00E5FF, // シアンブルー
+                            new Item.Properties()
+                    )
+            );
+
+    // ガスターク兵のスポーンエッグ（遺物所持エリート兵）
+    public static final RegistryObject<Item> GASTARK_SOLDIER_SPAWN_EGG =
+            ITEMS.register("gastark_soldier_spawn_egg",
+                    () -> new ForgeSpawnEggItem(
+                            ModEntities.GASTARK_SOLDIER,
+                            0x2E0854, // ダークパープル
+                            0xDAA520, // アンティークゴールド
+                            new Item.Properties()
+                    )
+            );
+
+    // 運命の破壊者のスポーンエッグ（ボス）
+    public static final RegistryObject<Item> DESTROYER_OF_FATE_SPAWN_EGG =
+            ITEMS.register("destroyer_of_fate_spawn_egg",
+                    () -> new ForgeSpawnEggItem(
+                            ModEntities.DESTROYER_OF_FATE,
+                            0x0F0F1A, // 漆黒
+                            0xFF1493, // クリムゾンマゼンタ
+                            new Item.Properties()
+                    )
+            );
+
+    // 雷オオカミのスポーンエッグ
+    public static final RegistryObject<Item> THUNDER_WOLF_SPAWN_EGG =
+            ITEMS.register("thunder_wolf_spawn_egg",
+                    () -> new ForgeSpawnEggItem(
+                            ModEntities.THUNDER_WOLF,
+                            0x1E3F66, // 紺
+                            0xFFEA00, // 稲妻イエロー
+                            new Item.Properties()
+                    )
+            );
+
+    // 黒オオカミのスポーンエッグ
+    public static final RegistryObject<Item> DARK_WOLF_SPAWN_EGG =
+            ITEMS.register("dark_wolf_spawn_egg",
+                    () -> new ForgeSpawnEggItem(
+                            ModEntities.DARK_WOLF,
+                            0x1A1A1A, // 黒
+                            0x6A0DAD, // ダークバイオレット
                             new Item.Properties()
                     )
             );

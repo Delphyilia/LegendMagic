@@ -1,5 +1,29 @@
 # AI 変更履歴 (AICHANGELOG.md)
 
+## [2026-10-18] Phase 13: デバッグプレイ用統合コマンド群（/legendmagic & /lm）と全Mobスポーンエッグの実装完了
+
+### 変更概要
+- **デバッグ統合コマンド体系（`LegendMagicCommand.java`）の実装**:
+  - 親コマンド `/legendmagic` および短縮エイリアス `/lm`（OP権限レベル2以上で実行可能）。
+  - `/lm learn all`: 上級魔法「稲死光」を含む全登録魔法を一括習得。刻印スロット未設定の場合は最大10スロットまで自動配置し、クライアントへ即時同期。
+  - `/lm reset spells`: プレイヤーの習得魔法データ、刻印スロット、選択インデックスを完全初期化し、クライアントへ同期。
+  - `/lm mana [amount]`: マナを全回復、または指定値に設定・同期。
+  - `/lm eggs`: 全Mob・ボスのスポーンエッグ（全8種×各64個）をインベントリに一括付与。
+  - `/lm kit test`: 検証用テストキット一式（魔導書、両魔眼、忘却欠片2種、祭壇台座、供物の台座4個、遺物の欠片64個、だんご64個、だんご神の長剣等）を付与。
+  - `/lm tp <destination>`: 各国構造物（ローランド砦、エスタブール研究所、ルーナ神殿、ガスターク砦）および各ディメンション（魔法研究所、メノリス大陸、オーバーワールド）への安全地表足場保証付き直行テレポート。
+  - `RegisterCommandsEvent` を通じてコマンドを自動登録。
+- **全Mob・ボス スポーンエッグ（新規7種）の実装**:
+  - `LegendMagicItems.java` に `ROLAND_GUARD_CAPTAIN_SPAWN_EGG`, `RUNA_PRIEST_SPAWN_EGG`, `ESTABUL_SOLDIER_SPAWN_EGG`, `GASTARK_SOLDIER_SPAWN_EGG`, `DESTROYER_OF_FATE_SPAWN_EGG`, `THUNDER_WOLF_SPAWN_EGG`, `DARK_WOLF_SPAWN_EGG` を登録。
+  - クリエイティブタブ `ModCreativeTabs` に全スポーンエッグを追加。
+  - `models/item/` に全8種のスポーンエッグアイテムモデルJSON（親モデル `minecraft:item/template_spawn_egg`）を配置。
+  - 言語ファイル（`ja_jp.json`, `en_us.json`）に日本語・英語名称を追加。
+- **仕様書（`for_agent/03_mechanics_and_ui.md`）の更新**:
+  - コマンド仕様およびスポーンエッグ仕様を追記。
+- **検証（Ground Truth）**:
+  - `compileJava` および `jar` の完全ビルド成功を確認（Exit code 0）。
+
+---
+
 ## [2026-10-16] Phase 12: ローランド帝国 実戦・攻撃魔法体系の大幅拡充（全6術）の実装完了
 
 ### 変更概要
