@@ -1,5 +1,34 @@
 # AI 変更履歴 (AICHANGELOG.md)
 
+## [2026-10-18] Phase 14: 実機フィードバック対応・システム総合ブラッシュアップ完了
+
+### 変更概要
+- **Config機能の拡張 (`Config.java`)**:
+  - `defaultMaxMana`: 初期最大マナを 10,000.0 に大幅拡充（初期100から移行、既存プレイヤーも自動マイグレーション）。
+  - `maxManaCap`: 最大マナ上限（50,000.0）。
+  - `manaRegenPerSecond`: 毎秒自然回復量（50.0/秒）。
+  - `manaGrowthRate`: 魔法使用時の最大マナ成長率（消費マナの1%還元）。
+  - `alphaStigmaDamageMultiplier` (2.0倍)、`iinoDoueConversionRate` (5.0秒/10ダメ)、`iinoDoueMaxDuration` (60秒)、`destroyerVoidFallbackY` (-50) をConfig項目として新設。
+- **マナ成長システムの実装 (`ManaManager.java`)**:
+  - 魔法を唱えるたび、消費マナの1%（設定値）が最大マナに恒久還元・加算される熟練度システムを実装。
+- **殲滅眼専用HUDの実装 (`ManaHudOverlay.java`, `ModNetwork.java`, `EyeUtil.java`)**:
+  - 殲滅眼着用時は通常マナバーを非表示化し、漆黒＆深紅の魔力蓄積バーに切り替え描画。
+  - 吸収した魔力蓄積値と覚醒可能秒数（`殲滅蓄積: ○○ (覚醒: ○○秒)`）をリアルタイムに同期・視覚化。
+- **ボスおよびMobの魔法攻撃方向補正 (`MagicUtil.java`, `IzuchiDeath.java`, 各魔法クラス)**:
+  - Mobが後退・回避移動中であっても、常にターゲットの中心へ向かうベクトルを優先算出して魔法を射出するよう補正。ボス「運命の破壊者」の横雷スナイプがプレイヤーに必中するように改善。
+- **円環ラジアルメニューの操作性抜本改善 (`RadialMenuScreen.java`)**:
+  - Screen表示中の `KeyMapping.isDown()` 消失による開閉無限ループを解消。GLFWレベルでの `InputConstants.isKeyDown` 判定と `keyReleased` イベントを採用し、マウスカーソルが中央に固定されず360度滑らかに魔法選択できるように改修。
+- **ローランド兵士の兵種クラス化 (`RolandSoldierEntity.java`)**:
+  - スポーン時に6種の兵種（雷撃兵:稲光、火炎兵:紅蓮、氷結兵:浮凍、水流兵:崩水、重力兵:倒地、呪縛兵:縛呪）にランダム分岐し、個体ごとに異なる魔法を駆使するAIと表示名を実装。
+- **メノリス大陸の壁埋まり防止 (`MenorisCompassItem.java`, `LegendMagicCommand.java`)**:
+  - 転移先チャンクを同期ロードし、上空（Y=300）から垂直スキャンして外気に開けた最上面の固体ブロックを探索する安全地表着地ロジックを実装。
+- **各国構造物の実体建築物化 (`structures/*.nbt`, 各 `start_pool.json`)**:
+  - 土台1枚（`base_plate`）のプレースホルダーを廃止し、石レンガ・柱・チェスト・兵士を備えた実体建築物NBT（ローランド砦 15x8x15、エスタブール研究所 13x7x13、ルーナ神殿 13x8x13、ガスターク砦 15x8x15）を完全作成・配備。
+- **検証（Ground Truth）**:
+  - `compileJava` および `jar` の完全ビルド成功を確認（Exit code 0）。
+
+---
+
 ## [2026-10-18] Phase 13: デバッグプレイ用統合コマンド群（/legendmagic & /lm）と全Mobスポーンエッグの実装完了
 
 ### 変更概要

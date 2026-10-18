@@ -78,6 +78,15 @@ public class ModNetwork {
                 SelectSpellIndexPacket::decode,
                 SelectSpellIndexPacket::handle
         );
+
+        // 6. 殲滅眼蓄積魔力同期パケット (Server -> Client)
+        CHANNEL.registerMessage(
+                packetId++,
+                SyncIinoDouePacket.class,
+                SyncIinoDouePacket::encode,
+                SyncIinoDouePacket::decode,
+                SyncIinoDouePacket::handle
+        );
     }
 
     // ========== 送信ヘルパー ==========
@@ -342,6 +351,32 @@ public class ModNetwork {
                 if (player != null) {
                     player.getPersistentData().putInt(SpellManager.TAG_SELECTED_INDEX, msg.index);
                 }
+            });
+            ctx.get().setPacketHandled(true);
+        }
+    }
+
+    /**
+     * 殲滅眼（イーノ・ドゥーエ）の蓄積プール値をクライアントに同期するパケット (Server → Client)
+     */
+    public static class SyncIinoDouePacket {
+        private final float pool;
+
+        public SyncIinoDouePacket(float pool) {
+            this.pool = pool;
+        }
+
+        public static void encode(SyncIinoDouePacket msg, FriendlyByteBuf buf) {
+            buf.writeFloat(msg.pool);
+        }
+
+        public static SyncIinoDouePacket decode(FriendlyByteBuf buf) {
+            return new SyncIinoDouePacket(buf.readFloat());
+        }
+
+        public static void handle(SyncIinoDouePacket msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+                com.delphy.legendmagic.client.ClientIinoDoueData.setPool(msg.pool);
             });
             ctx.get().setPacketHandled(true);
         }

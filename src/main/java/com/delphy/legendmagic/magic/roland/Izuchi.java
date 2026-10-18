@@ -83,7 +83,7 @@ public class Izuchi implements Spell {
 
         // ターゲットの特定 (レイキャスト)
         Vec3 start = caster.getEyePosition();
-        Vec3 look = caster.getLookAngle();
+        Vec3 look = com.delphy.legendmagic.util.MagicUtil.getSpellAimDirection(caster, start);
         Vec3 end = start.add(look.scale(range));
 
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(

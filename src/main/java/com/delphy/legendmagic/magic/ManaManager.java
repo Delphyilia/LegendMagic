@@ -1,5 +1,6 @@
 package com.delphy.legendmagic.magic;
 
+import com.delphy.legendmagic.Config;
 import com.delphy.legendmagic.network.ModNetwork;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -8,25 +9,63 @@ import net.minecraft.world.entity.player.Player;
 /**
  * プレイヤーのマナを管理するマネージャークラス。
  * データはプレイヤーのPersistentDataに保存され、定期的に自動回復およびクライアント同期される。
+ * 魔法を使用するほど消費マナに比例して最大マナが成長する。
  */
 public class ManaManager {
     public static final String TAG_MANA = "LegendMagic_Mana";
     public static final String TAG_MAX_MANA = "LegendMagic_MaxMana";
-    public static final float DEFAULT_MAX_MANA = 100.0F;
-    public static final float REGEN_PER_SECOND = 5.0F; // 毎秒5マナ回復 (20秒で全快)
+    public static final float FALLBACK_DEFAULT_MAX_MANA = 10000.0F;
+    public static final float FALLBACK_REGEN_PER_SECOND = 50.0F;
+
+    public static float getDefaultMaxMana() {
+        try {
+            return Config.DEFAULT_MAX_MANA.get().floatValue();
+        } catch (Exception e) {
+            return FALLBACK_DEFAULT_MAX_MANA;
+        }
+    }
+
+    public static float getMaxManaCap() {
+        try {
+            return Config.MAX_MANA_CAP.get().floatValue();
+        } catch (Exception e) {
+            return 50000.0F;
+        }
+    }
+
+    public static float getRegenPerSecond() {
+        try {
+            return Config.MANA_REGEN_PER_SECOND.get().floatValue();
+        } catch (Exception e) {
+            return FALLBACK_REGEN_PER_SECOND;
+        }
+    }
+
+    public static float getGrowthRate() {
+        try {
+            return Config.MANA_GROWTH_RATE.get().floatValue();
+        } catch (Exception e) {
+            return 0.01F;
+        }
+    }
 
     public static float getMana(Player player) {
         CompoundTag data = player.getPersistentData();
+        float defaultMax = getDefaultMaxMana();
         if (!data.contains(TAG_MANA)) {
-            data.putFloat(TAG_MANA, DEFAULT_MAX_MANA);
+            data.putFloat(TAG_MANA, defaultMax);
         }
         return data.getFloat(TAG_MANA);
     }
 
     public static float getMaxMana(Player player) {
         CompoundTag data = player.getPersistentData();
-        if (!data.contains(TAG_MAX_MANA)) {
-            data.putFloat(TAG_MAX_MANA, DEFAULT_MAX_MANA);
+        float defaultMax = getDefaultMaxMana();
+        if (!data.contains(TAG_MAX_MANA) || data.getFloat(TAG_MAX_MANA) < defaultMax) {
+            data.putFloat(TAG_MAX_MANA, defaultMax);
+            if (!data.contains(TAG_MANA) || data.getFloat(TAG_MANA) < defaultMax) {
+                data.putFloat(TAG_MANA, defaultMax);
+            }
         }
         return data.getFloat(TAG_MAX_MANA);
     }
@@ -42,22 +81,42 @@ public class ManaManager {
     }
 
     public static void setMaxMana(Player player, float maxMana) {
-        player.getPersistentData().putFloat(TAG_MAX_MANA, Math.max(1.0F, maxMana));
+        float cap = getMaxManaCap();
+        float clamped = Math.min(cap, Math.max(1.0F, maxMana));
+        player.getPersistentData().putFloat(TAG_MAX_MANA, clamped);
         if (player instanceof ServerPlayer serverPlayer) {
             syncToClient(serverPlayer);
         }
     }
 
     /**
-     * マナを消費する。足りていれば消費して true、足りなければ false を返す。
+     * マナを消費し、消費量に応じて最大マナを成長させる。
      */
     public static boolean consumeMana(Player player, float cost) {
         float current = getMana(player);
         if (current >= cost) {
             setMana(player, current - cost);
+            growMana(player, cost);
             return true;
         }
         return false;
+    }
+
+    /**
+     * 魔法使用による最大マナの成長処理（消費マナの一定割合を加算）
+     */
+    private static void growMana(Player player, float cost) {
+        float rate = getGrowthRate();
+        if (rate <= 0.0F) return;
+
+        float growth = cost * rate;
+        float currentMax = getMaxMana(player);
+        float cap = getMaxManaCap();
+
+        if (currentMax < cap) {
+            float newMax = Math.min(cap, currentMax + growth);
+            setMaxMana(player, newMax);
+        }
     }
 
     /**
@@ -68,14 +127,15 @@ public class ManaManager {
     }
 
     /**
-     * サーバーtickごとの更新処理（毎秒5%の自動回復と定期同期）
+     * サーバーtickごとの更新処理（毎秒自然回復と定期同期）
      */
     public static void tickServer(ServerPlayer player) {
         float current = getMana(player);
         float max = getMaxMana(player);
+        float regen = getRegenPerSecond();
 
-        if (current < max) {
-            float newMana = Math.min(max, current + (REGEN_PER_SECOND / 20.0F));
+        if (current < max && regen > 0.0F) {
+            float newMana = Math.min(max, current + (regen / 20.0F));
             player.getPersistentData().putFloat(TAG_MANA, newMana);
         }
 

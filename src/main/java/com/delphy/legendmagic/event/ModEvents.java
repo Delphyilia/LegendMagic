@@ -59,6 +59,7 @@ public class ModEvents {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             ManaManager.syncToClient(serverPlayer);
+            com.delphy.legendmagic.util.EyeUtil.syncPoolToClient(serverPlayer);
 
             // 初回スポーン時の魔導書（Grimoire）自動配布
             if (!serverPlayer.getPersistentData().getBoolean("LegendMagic_ReceivedGrimoire")) {
@@ -77,6 +78,7 @@ public class ModEvents {
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             ManaManager.syncToClient(serverPlayer);
+            com.delphy.legendmagic.util.EyeUtil.syncPoolToClient(serverPlayer);
         }
     }
 

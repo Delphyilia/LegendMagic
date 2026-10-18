@@ -444,21 +444,41 @@ public class LegendMagicCommand {
     }
 
     /**
-     * 安全な地表ブロック位置を探索して返す
+     * 安全な地表ブロック位置を探索して返す（チャンク同期生成＆上空垂直スキャン）
      */
     private static BlockPos findSafeSurfacePos(ServerLevel level, BlockPos origin) {
         int x = origin.getX();
         int z = origin.getZ();
-        int surfaceY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
 
-        if (surfaceY <= level.getMinBuildHeight() + 5) {
-            surfaceY = 70;
+        // 1. 目的地点のチャンクを強制同期ロード＆生成保証
+        level.getChunk(x >> 4, z >> 4);
+
+        int minY = level.getMinBuildHeight() + 5;
+        int maxY = Math.min(300, level.getMaxBuildHeight() - 10);
+
+        // 2. 上空から垂直に下降スキャンして開けた最上面の固体ブロックを探索
+        BlockPos landingPos = null;
+        for (int y = maxY; y >= minY; y--) {
+            BlockPos checkPos = new BlockPos(x, y, z);
+            BlockPos groundPos = checkPos.below();
+            BlockPos headPos = checkPos.above();
+
+            if (!level.isEmptyBlock(groundPos) && level.getBlockState(groundPos).isSolid() && !level.getBlockState(groundPos).liquid()) {
+                if (level.isEmptyBlock(checkPos) && level.isEmptyBlock(headPos)) {
+                    landingPos = checkPos;
+                    break;
+                }
+            }
         }
 
-        BlockPos landingPos = new BlockPos(x, surfaceY, z);
+        if (landingPos == null) {
+            int surfaceY = Math.max(75, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z));
+            landingPos = new BlockPos(x, surfaceY, z);
+        }
+
         BlockPos floorPos = landingPos.below();
 
-        // 足場ブロックが空気・液体なら石レンガで足場を保証
+        // 3. 足場ブロックが空気・液体なら石レンガで足場を保証
         if (level.isEmptyBlock(floorPos) || level.getBlockState(floorPos).liquid()) {
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dz = -1; dz <= 1; dz++) {
@@ -467,7 +487,7 @@ public class LegendMagicCommand {
             }
         }
 
-        // 頭上2ブロックを空気で確保（窒息防止）
+        // 4. 頭上2ブロックを空気で確保（窒息防止）
         level.removeBlock(landingPos, false);
         level.removeBlock(landingPos.above(), false);
 

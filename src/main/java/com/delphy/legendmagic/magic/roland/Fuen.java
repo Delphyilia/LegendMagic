@@ -83,7 +83,7 @@ public class Fuen implements Spell {
         if (!(caster.level() instanceof ServerLevel level)) return;
 
         Vec3 start = caster.getEyePosition();
-        Vec3 look = caster.getLookAngle();
+        Vec3 look = com.delphy.legendmagic.util.MagicUtil.getSpellAimDirection(caster, start);
         double range = 26.0D;
 
         level.playSound(null, caster.getX(), caster.getY(), caster.getZ(),

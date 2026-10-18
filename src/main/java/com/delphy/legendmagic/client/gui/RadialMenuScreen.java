@@ -5,6 +5,7 @@ import com.delphy.legendmagic.api.Spell;
 import com.delphy.legendmagic.client.input.ModKeyBindings;
 import com.delphy.legendmagic.magic.SpellManager;
 import com.delphy.legendmagic.network.ModNetwork;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -12,6 +13,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -36,10 +38,41 @@ public class RadialMenuScreen extends Screen {
     @Override
     public void tick() {
         super.tick();
-        // Rキーを離したら選択を確定して閉じる
-        if (!ModKeyBindings.RADIAL_MENU_KEY.isDown()) {
+        // GLFWレベルでキーが現在も押されているか直接確認
+        long window = Minecraft.getInstance().getWindow().getWindow();
+        InputConstants.Key boundKey = ModKeyBindings.RADIAL_MENU_KEY.getKey();
+        boolean isPressed = false;
+
+        if (boundKey.getType() == InputConstants.Type.KEYSYM) {
+            isPressed = InputConstants.isKeyDown(window, boundKey.getValue());
+        } else if (boundKey.getType() == InputConstants.Type.MOUSE) {
+            isPressed = GLFW.glfwGetMouseButton(window, boundKey.getValue()) == GLFW.GLFW_PRESS;
+        }
+
+        // キーが離されたら選択を確定して画面を閉じる
+        if (!isPressed) {
             confirmSelection();
         }
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        InputConstants.Key boundKey = ModKeyBindings.RADIAL_MENU_KEY.getKey();
+        if (boundKey.getType() == InputConstants.Type.KEYSYM && boundKey.getValue() == keyCode) {
+            confirmSelection();
+            return true;
+        }
+        return super.keyReleased(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        InputConstants.Key boundKey = ModKeyBindings.RADIAL_MENU_KEY.getKey();
+        if (boundKey.getType() == InputConstants.Type.MOUSE && boundKey.getValue() == button) {
+            confirmSelection();
+            return true;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
@@ -58,6 +91,7 @@ public class RadialMenuScreen extends Screen {
             ModNetwork.sendToServer(new ModNetwork.SelectSpellIndexPacket(hoveredSlot));
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.2F));
         }
+        ModKeyBindings.RADIAL_MENU_KEY.setDown(false);
         this.onClose();
     }
 

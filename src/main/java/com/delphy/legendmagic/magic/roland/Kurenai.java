@@ -80,7 +80,7 @@ public class Kurenai implements Spell {
         if (!(caster.level() instanceof ServerLevel level)) return;
 
         Vec3 eyePos = caster.getEyePosition();
-        Vec3 look = caster.getLookAngle();
+        Vec3 look = com.delphy.legendmagic.util.MagicUtil.getSpellAimDirection(caster, eyePos);
 
         // 複写眼持ちなら火球の威力・爆発力アップ
         boolean hasEye = (caster instanceof Player p && EyeUtil.hasAlphaStigma(p));

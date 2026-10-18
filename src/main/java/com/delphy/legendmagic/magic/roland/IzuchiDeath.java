@@ -70,7 +70,7 @@ public class IzuchiDeath implements Spell {
 
         // 術者の頭上（横雷の発生源）
         Vec3 headPos = caster.getEyePosition().add(0, 0.7D, 0);
-        Vec3 look = caster.getLookAngle();
+        Vec3 look = com.delphy.legendmagic.util.MagicUtil.getSpellAimDirection(caster, headPos);
         Vec3 right = look.cross(new Vec3(0, 1, 0)).normalize();
         if (right.lengthSqr() < 0.001D) {
             right = new Vec3(1, 0, 0);

@@ -43,7 +43,13 @@ public class EyeUtil {
     public static void addIinoDouePool(Player player, float amount) {
         CompoundTag tag = player.getPersistentData();
         float current = getIinoDouePool(player);
-        tag.putFloat(TAG_IINO_DOUE_POOL, current + amount);
+        float next = current + amount;
+        tag.putFloat(TAG_IINO_DOUE_POOL, next);
+
+        if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+            com.delphy.legendmagic.network.ModNetwork.sendToClient(
+                    new com.delphy.legendmagic.network.ModNetwork.SyncIinoDouePacket(next), serverPlayer);
+        }
     }
 
     /**
@@ -53,6 +59,20 @@ public class EyeUtil {
         CompoundTag tag = player.getPersistentData();
         float current = getIinoDouePool(player);
         tag.putFloat(TAG_IINO_DOUE_POOL, 0.0F);
+
+        if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+            com.delphy.legendmagic.network.ModNetwork.sendToClient(
+                    new com.delphy.legendmagic.network.ModNetwork.SyncIinoDouePacket(0.0F), serverPlayer);
+        }
         return current;
+    }
+
+    /**
+     * クライアントへ現在のプール値を同期
+     */
+    public static void syncPoolToClient(net.minecraft.server.level.ServerPlayer player) {
+        float current = getIinoDouePool(player);
+        com.delphy.legendmagic.network.ModNetwork.sendToClient(
+                new com.delphy.legendmagic.network.ModNetwork.SyncIinoDouePacket(current), player);
     }
 }
